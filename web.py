@@ -18,6 +18,7 @@ API (JSON):
 from __future__ import annotations
 
 import argparse
+import errno
 import json
 import logging
 import re
@@ -303,7 +304,15 @@ def main() -> int:
     a = ap.parse_args()
     logging.basicConfig(level=logging.WARNING, format="%(asctime)s %(levelname)s %(name)s: %(message)s",
                         datefmt="%H:%M:%S")
-    srv = make_server(a.host, a.port)
+    try:
+        srv = make_server(a.host, a.port)
+    except OSError as e:
+        if e.errno not in (errno.EADDRINUSE, 48, 98):
+            raise
+        print(f"Порт {a.port} уже занят: возможно, платформа уже запущена в другом окне — откройте "
+              f"http://{a.host}:{a.port}. Или запустите на другом порту: python web.py --port {a.port + 80}",
+              file=sys.stderr)
+        return 1
     mode = SETTINGS.model_label if SETTINGS.llm_enabled else "только правила (ключ LLM не найден)"
     print(f"Откройте http://{a.host}:{a.port}   режим: {mode}   (Ctrl+C — остановить)", file=sys.stderr)
     try:
