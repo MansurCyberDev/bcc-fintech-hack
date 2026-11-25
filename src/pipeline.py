@@ -124,6 +124,14 @@ def run(doc_path: str, settings: Settings, *, use_llm: bool = True, use_critic: 
 
     progress("7/7 Формирую вердикт")
     run_info.llm_calls = client.calls if client else 0
+    if client is not None:
+        run_info.model = f"{settings.provider}:{client.model}"
+        if client.ok_calls == 0:
+            run_info.mode = "только правила — LLM не ответила ни на один запрос (причины ниже)"
+            run_info.model += " (не ответила)"
+            run_info.critic_used = False
+        elif run_info.llm_errors:
+            run_info.mode += f" (частично: {len(run_info.llm_errors)} шагов LLM не выполнены)"
     run_info.duration_sec = round(time.monotonic() - t0, 1)
     return report
 

@@ -81,3 +81,33 @@ def test_openai_compatible():
     assert c.generate_json("s", "u") == {"x": 2}
     assert sess.calls[0][0].endswith("/chat/completions")
     assert sess.calls[0][2]["Authorization"] == "Bearer k"
+
+
+def test_daily_quota_fails_fast_and_disables(monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda s: (_ for _ in ()).throw(AssertionError("не должно ждать")))
+    body = {"error": {"message": "You exceeded your current quota", "details": [{"quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}}
+    sess = FakeSession([Resp(429, body)])
+    c = LLMClient(settings(), session=sess)
+    with pytest.raises(LLMError, match="квота"):
+        c.generate_json("s", "u")
+    assert c.disabled and len(sess.calls) == 1
+    with pytest.raises(LLMError, match="отключена"):      # следующие шаги не ходят в сеть
+        c.generate_json("s", "u")
+    assert len(sess.calls) == 1
+
+
+def test_unavailable_model_falls_back(monkeypatch):
+    sess = FakeSession([Resp(404, {"error": {"message": "model is no longer available to new users"}}),
+                        gemini_ok('{"ok": 1}')])
+    c = LLMClient(settings(fallback_models=("lite",)), session=sess)
+    assert c.generate_json("s", "u") == {"ok": 1}
+    assert c.model == "lite"
+    assert "/models/lite:" in sess.calls[1][0]
+
+
+def test_overloaded_model_falls_back(monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    sess = FakeSession([Resp(503, {"error": {"message": "overloaded"}})] * 3 + [gemini_ok('{"ok": 2}')])
+    c = LLMClient(settings(fallback_models=("lite",)), session=sess)
+    assert c.generate_json("s", "u") == {"ok": 2}
+    assert c.model == "lite"

@@ -114,3 +114,23 @@ def test_llm_failure_degrades_gracefully(tmp_path):
     assert rep.questions                    # вопросы — запасным алгоритмом
     assert rep.run.llm_errors
     assert not rep.verdict.ready_for_dev
+
+
+def test_mode_is_honest_when_llm_never_answers(tmp_path):
+    class Dead(LLMClient):
+        def _gemini(self, *a, **k):
+            from src.llm.client import _Retryable
+            raise _Retryable("HTTP 503: overloaded")
+    import time as _t
+    p = tmp_path / "spec.md"
+    p.write_text(SAMPLE_MD, encoding="utf-8")
+    s = make_settings()
+    orig = _t.sleep
+    _t.sleep = lambda x: None
+    try:
+        rep = run(str(p), s, client=Dead(s))
+    finally:
+        _t.sleep = orig
+    assert "только правила" in rep.run.mode
+    assert "не ответила" in rep.run.model
+    assert rep.run.llm_calls <= 4          # «предохранитель» не даёт долбить API

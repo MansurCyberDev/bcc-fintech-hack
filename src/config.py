@@ -45,6 +45,7 @@ class Settings:
     temperature: float
     max_doc_chars: int       # сколько символов документа максимум отдаём модели
     min_interval: float      # пауза между запросами (бесплатный тариф Gemini ограничивает RPM)
+    fallback_models: tuple = ()  # запасные модели, если основная недоступна/перегружена
 
     @property
     def llm_enabled(self) -> bool:
@@ -62,25 +63,29 @@ def load_settings() -> Settings:
     provider = os.getenv("LLM_PROVIDER", "gemini").strip().lower()
     if provider == "gemini":
         key = os.getenv("GEMINI_API_KEY", "") or os.getenv("GOOGLE_API_KEY", "")
-        model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+        # «-latest» — псевдоним Google на актуальную Flash-модель: не ломается, когда старые версии снимают
+        model = os.getenv("GEMINI_MODEL", "") or "gemini-flash-latest"
+        fallbacks = os.getenv("GEMINI_FALLBACK_MODELS", "gemini-flash-lite-latest")
         base = os.getenv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta")
     elif provider in ("openai", "openai-compatible"):
         provider = "openai"
         key = os.getenv("OPENAI_API_KEY", "")
         model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        fallbacks = os.getenv("OPENAI_FALLBACK_MODELS", "")
         base = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
     else:
-        provider, key, model, base = "none", "", "", ""
+        provider, key, model, base, fallbacks = "none", "", "", "", ""
     return Settings(
         provider=provider,
         api_key=key.strip(),
         model=model.strip(),
         base_url=base.rstrip("/"),
         timeout=_int("LLM_TIMEOUT", 120),
-        max_retries=_int("LLM_MAX_RETRIES", 4),
+        max_retries=_int("LLM_MAX_RETRIES", 3),
         max_calls=_int("LLM_MAX_CALLS", 30),
         batch_size=max(1, _int("LLM_BATCH_SIZE", 12)),
         temperature=_float("LLM_TEMPERATURE", 0.1),
         max_doc_chars=_int("LLM_MAX_DOC_CHARS", 150_000),
         min_interval=_float("LLM_MIN_INTERVAL", 4.0),
+        fallback_models=tuple(m.strip() for m in fallbacks.split(",") if m.strip()),
     )

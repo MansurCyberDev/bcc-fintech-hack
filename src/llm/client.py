@@ -29,7 +29,11 @@ class LLMClient:
     def __init__(self, settings: Settings, session: requests.Session | None = None):
         self.s = settings
         self.http = session or requests.Session()
-        self.calls = 0
+        self.calls = 0          # всего HTTP-запросов (включая повторы)
+        self.ok_calls = 0       # успешных ответов
+        self.failed_in_row = 0
+        self.disabled = ""      # причина, если LLM выключена до конца прогона
+        self.model = settings.model
         self._last_call = 0.0
 
     # ------------------------------------------------------------------ public
@@ -62,35 +66,54 @@ class LLMClient:
 
     # ----------------------------------------------------------------- private
     def _generate(self, system: str, user: str, purpose: str) -> str:
-        if self.calls >= self.s.max_calls:
-            raise LLMError(f"Достигнут лимит вызовов LLM за прогон ({self.s.max_calls}). Увеличьте LLM_MAX_CALLS.")
+        """Один логический запрос: повторы, переход на запасную модель, «предохранитель»."""
+        if self.disabled:
+            raise LLMError(f"LLM отключена в этом прогоне: {self.disabled}")
         last_err: Exception | None = None
-        for attempt in range(self.s.max_retries + 1):
-            wait = self.s.min_interval - (time.monotonic() - self._last_call)
-            if wait > 0 and self._last_call:
-                time.sleep(wait)
-            self._last_call = time.monotonic()
-            self.calls += 1
-            t0 = time.monotonic()
-            try:
-                if self.s.provider == "gemini":
-                    out = self._gemini(system, user)
-                else:
-                    out = self._openai(system, user)
-                log.info("LLM %s: ok за %.1f c (попытка %d)", purpose, time.monotonic() - t0, attempt + 1)
-                return out
-            except _Retryable as e:
-                last_err = e
-                delay = e.retry_after or min(60.0, 2 ** (attempt + 1)) + random.uniform(0, 1)
-                log.warning("LLM %s: %s; повтор через %.0f c", purpose, e, delay)
-                if attempt < self.s.max_retries:
-                    time.sleep(delay)
+        models = [self.model] + [m for m in self.s.fallback_models if m != self.model]
+        for model in models:
+            for attempt in range(self.s.max_retries + 1):
                 if self.calls >= self.s.max_calls:
-                    break
+                    raise LLMError(f"Достигнут лимит вызовов LLM за прогон ({self.s.max_calls}). Увеличьте LLM_MAX_CALLS.")
+                wait = self.s.min_interval - (time.monotonic() - self._last_call)
+                if wait > 0 and self._last_call:
+                    time.sleep(wait)
+                self._last_call = time.monotonic()
+                self.calls += 1
+                t0 = time.monotonic()
+                try:
+                    out = self._gemini(system, user, model) if self.s.provider == "gemini" else self._openai(system, user)
+                    log.info("LLM %s: ok за %.1f c (%s, попытка %d)", purpose, time.monotonic() - t0, model, attempt + 1)
+                    self.ok_calls += 1
+                    self.failed_in_row = 0
+                    if model != self.model:
+                        log.warning("Перехожу на модель %s", model)
+                        self.model = model
+                    return out
+                except _QuotaExhausted as e:
+                    # дневная квота ключа исчерпана: повторы бессмысленны — выключаем LLM до конца прогона
+                    self.disabled = str(e)
+                    raise LLMError(str(e)) from e
+                except _ModelUnavailable as e:
+                    last_err = e
+                    log.warning("LLM %s: модель %s недоступна: %s", purpose, model, e)
+                    break  # к следующей модели
+                except _Retryable as e:
+                    last_err = e
+                    if attempt >= self.s.max_retries:
+                        break
+                    delay = min(30.0, e.retry_after or 2 ** (attempt + 1) + random.uniform(0, 1))
+                    log.warning("LLM %s: %s; повтор через %.0f c", purpose, e, delay)
+                    time.sleep(delay)
+            if self.s.provider != "gemini":
+                break
+        self.failed_in_row += 1
+        if self.failed_in_row >= 2:
+            self.disabled = f"два запроса подряд не удались ({last_err})"
         raise LLMError(f"LLM недоступна после повторов: {last_err}")
 
-    def _gemini(self, system: str, user: str) -> str:
-        url = f"{self.s.base_url}/models/{self.s.model}:generateContent"
+    def _gemini(self, system: str, user: str, model: str) -> str:
+        url = f"{self.s.base_url}/models/{model}:generateContent"
         body = {
             "systemInstruction": {"parts": [{"text": system}]},
             "contents": [{"role": "user", "parts": [{"text": user}]}],
@@ -139,13 +162,25 @@ class LLMClient:
         if r.status_code < 300:
             return
         msg = _error_message(r)
+        if r.status_code == 429 and re.search(r"PerDay|per day|daily|exceeded your current quota|billing", r.text or "", re.I) \
+                and not re.search(r"PerMinute|per minute", r.text or "", re.I):
+            raise _QuotaExhausted(f"квота ключа исчерпана (HTTP 429): {msg}. Подождите сброса квоты или используйте другой ключ.")
+        if r.status_code == 404 or (r.status_code == 400 and re.search(r"model", msg, re.I) and
+                                    re.search(r"not found|not supported|no longer available", msg, re.I)):
+            raise _ModelUnavailable(f"HTTP {r.status_code}: {msg}")
         if r.status_code == 429 or r.status_code >= 500:
             raise _Retryable(f"HTTP {r.status_code}: {msg}", retry_after=_retry_after(r))
         if r.status_code in (401, 403):
             raise LLMError(f"Ключ API отклонён (HTTP {r.status_code}): {msg}")
-        if r.status_code == 404:
-            raise LLMError(f"Модель или адрес не найдены (HTTP 404): {msg}. Проверьте GEMINI_MODEL/OPENAI_MODEL.")
         raise LLMError(f"Ошибка LLM API (HTTP {r.status_code}): {msg}")
+
+
+class _QuotaExhausted(Exception):
+    pass
+
+
+class _ModelUnavailable(Exception):
+    pass
 
 
 class _Retryable(Exception):
