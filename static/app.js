@@ -86,6 +86,7 @@ async function init() {
     CONFIG = await api("/api/config");
     const chip = document.getElementById("mode-chip");
     chip.textContent = CONFIG.llm_enabled ? `Модель: ${CONFIG.model}` : "Режим: только правила";
+    chip.classList.toggle("live", !!CONFIG.llm_enabled);
     chip.title = CONFIG.llm_enabled ? "LLM подключена" : "Ключ LLM не найден в .env — смысловые проверки отключены";
   } catch (e) {
     CONFIG = { llm_enabled: false, formats: [".md", ".pdf", ".docx", ".txt"], max_mb: 10, samples: [] };
@@ -131,7 +132,7 @@ function renderUpload(error) {
   input.addEventListener("change", () => pick(input.files[0]));
   const drop = h("label", { class: "drop", for: "file", tabindex: "0",
     onkeydown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } } },
-    svgIcon(), h("b", { text: "Перетащите документ сюда или выберите файл" }),
+    h("span", { class: "ico" }, svgIcon()), h("b", { text: "Перетащите документ сюда или выберите файл" }),
     h("span", { class: "muted small", text: `PDF, DOCX, Markdown или TXT, до ${CONFIG.max_mb} МБ` }));
   ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
   ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
@@ -167,9 +168,15 @@ function renderUpload(error) {
     cashback: ["Кешбэк в кафе", "Тестовое ТЗ с заложенными ошибками"],
   };
   app.replaceChildren(
-    h("section", { class: "hero" },
-      h("h1", { text: "Найдите ошибки в ТЗ до того, как их найдёт разработка" }),
-      h("p", { text: "Загрузите техническое задание. Агент проверит каждое требование и документ целиком по ISO/IEC/IEEE 29148 и IEEE 830, покажет противоречия с цитатами и номерами строк, задаст вопросы автору и скажет, можно ли начинать разработку." })),
+    h("div", { class: "hero-band" }, h("section", { class: "hero" },
+      h("div", {},
+        h("span", { class: "eyebrow", text: "AI-ревью технических заданий" }),
+        h("h1", {}, "Найдите ошибки в ТЗ ", h("em", { text: "до того," }), " как их найдёт разработка"),
+        h("p", { text: "Загрузите техническое задание. Агент проверит каждое требование и документ целиком по ISO/IEC/IEEE 29148 и IEEE 830, покажет противоречия с цитатами и номерами строк, задаст вопросы автору и скажет, можно ли начинать разработку." })),
+      h("div", { class: "trust", role: "list", "aria-label": "Гарантии проверки" },
+        h("div", { role: "listitem" }, h("b", { text: "2" }), h("span", { text: "стандарта: ISO/IEC/IEEE 29148 и IEEE 830" })),
+        h("div", { role: "listitem" }, h("b", { text: "100%" }), h("span", { text: "цитат сверены с документом кодом" })),
+        h("div", { role: "listitem" }, h("b", { text: "6" }), h("span", { text: "этапов: от нарезки до заключения" }))))),
     h("div", { class: "upload-grid" },
       h("section", { class: "card card-pad" },
         h("h2", { text: "Документ на проверку" }),
@@ -210,6 +217,11 @@ function svgIcon() {
   return s("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" },
     s("path", { d: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" }),
     s("path", { d: "M14 3v5h5M12 17v-6M9.5 13.5L12 11l2.5 2.5" }));
+}
+function verdictIcon(status) {
+  const paths = { ok: ["M20 6L9 17l-5-5"], warn: ["M12 9v4", "M12 17h.01", "M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"],
+    bad: ["M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z", "M9.5 9.5l5 5", "M14.5 9.5l-5 5"] };
+  return h("div", { class: "verdict-icon", "aria-hidden": "true" }, s("svg", { viewBox: "0 0 24 24" }, ...paths[status].map((d) => s("path", { d }))));
 }
 
 // ------------------------------------------------------------------ задача: прогресс или отчёт
@@ -290,9 +302,11 @@ function renderReport(tab, arg, keepScroll) {
   const content = h("div");
   app.replaceChildren(
     h("section", { class: `card verdict ${status}` },
+      verdictIcon(status),
       h("div", {},
-        h("div", { class: "verdict-doc", text: `Заключение по документу «${R.run.doc_name}»` }),
+        h("div", { class: "eyebrow", text: "Заключение агента" }),
         h("div", { class: "stamp" }, h("h1", { text: title })),
+        h("div", { class: "verdict-doc" }, "Документ: ", h("b", { text: `«${R.run.doc_name}»` })),
         h("p", { text: V.summary }),
         h("div", { class: "flags" },
           flag(V.ready_for_dev, "Разработка"), flag(V.ready_for_test, "Тестирование"),
@@ -548,7 +562,8 @@ function viewQuestions(root) {
     ta.addEventListener("input", update);
     return card;
   });
-  const counter = h("span", { class: "small" });
+  const counter = h("span", { class: "small", role: "status", "aria-atomic": "true" });
+  const meter = h("i", { style: "width:0" });
   function update() {
     let n = 0;
     for (const ta of Object.values(areas)) {
@@ -557,6 +572,7 @@ function viewQuestions(root) {
       ta.closest(".question")?.classList.toggle("answered", has);
     }
     const blk = R.questions.filter((q) => q.blocking && areas[q.qid].value.trim()).length;
+    meter.style.width = `${(n / R.questions.length) * 100}%`;
     counter.replaceChildren(h("b", { text: `Отвечено ${n} из ${R.questions.length}` }),
       R.stats.questions_blocking ? ` · блокирующих ${blk} из ${R.stats.questions_blocking}` : "");
   }
@@ -580,7 +596,7 @@ function viewQuestions(root) {
   root.append(
     h("div", { class: "alert alert-info", style: "margin-bottom:14px" },
       "Ответьте на вопросы от имени автора документа — агент отметит закрытые дефекты, предложит новые формулировки и пересчитает заключение. Пустые ответы пропускаются."),
-    res, ...items, h("div", { class: "action-bar" }, counter, h("span", { class: "spacer" }), btn));
+    ...(res ? [res] : []), ...items, h("div", { class: "action-bar" }, h("span", { class: "answer-meter", "aria-hidden": "true" }, meter), counter, h("span", { class: "spacer" }), btn));
   update();
 }
 
