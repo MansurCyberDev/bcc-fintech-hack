@@ -129,7 +129,7 @@ function renderUpload(error) {
   const drop = h("label", { class: "drop", for: "file", tabindex: "0",
     onkeydown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } } },
     svgIcon(), h("b", { text: "Перетащите документ сюда или выберите файл" }),
-    h("span", { class: "muted small", text: `${CONFIG.formats.join(", ")} · до ${CONFIG.max_mb} МБ` }));
+    h("span", { class: "muted small", text: `PDF, DOCX, Markdown или TXT, до ${CONFIG.max_mb} МБ` }));
   ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
   ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
   drop.addEventListener("drop", (e) => pick(e.dataTransfer.files[0]));
@@ -159,21 +159,16 @@ function renderUpload(error) {
   }
 
   const SAMPLE_NAMES = {
-    requirements: ["Уведомление о расходах по карте", "ТЗ из задания хакатона · бизнес-часть + REST API"],
-    cashback: ["Кешбэк в кафе", "Тестовое ТЗ с заложенными дефектами"],
+    requirements: ["Уведомление о расходах по карте", "ТЗ из задания хакатона"],
+    cashback: ["Кешбэк в кафе", "Тестовое ТЗ с заложенными ошибками"],
   };
   app.replaceChildren(
     h("section", { class: "hero" },
-      h("h1", { text: "Проверка технического задания до начала разработки" }),
-      h("p", { text: "Агент разбивает документ на требования, проверяет каждое и весь набор по ISO/IEC/IEEE 29148 и IEEE 830, находит противоречия, подтверждает каждую цитату и готовит вопросы автору. Итог — заключение о готовности к разработке и тестированию." }),
-      h("ul", { class: "trust" },
-        h("li", { text: "ISO/IEC/IEEE 29148 · IEEE 830" }),
-        h("li", { text: "Каждая цитата сверена с документом" }),
-        h("li", { text: "Работает и без LLM — только правилами" }),
-        h("li", { text: "Без LLM документ не покидает компьютер" }))),
+      h("h1", { text: "Найдите ошибки в ТЗ до того, как их найдёт разработка" }),
+      h("p", { text: "Загрузите техническое задание. Агент проверит каждое требование и документ целиком по ISO/IEC/IEEE 29148 и IEEE 830, покажет противоречия с цитатами и номерами строк, задаст вопросы автору и скажет, можно ли начинать разработку." })),
     h("div", { class: "upload-grid" },
       h("section", { class: "card card-pad" },
-        h("h2", { text: "Документ" }),
+        h("h2", { text: "Документ на проверку" }),
         h("div", { class: "stack", style: "margin-top:14px" }, input, drop, picked,
           h("div", { class: "opts" },
             h("label", { class: "opt", for: "offline" }, offline, h("span", {},
@@ -184,22 +179,23 @@ function renderUpload(error) {
               h("span", { class: "muted small", text: "На один запрос к LLM меньше. Критик отсеивает ложные срабатывания — оставьте его включённым для сдачи." })))),
           errBox,
           h("div", { class: "row" }, go),
-          CONFIG.samples.length ? h("div", { class: "samples" }, h("div", { class: "samples-label", text: "Нет документа под рукой? Запустите на примере" }),
-            h("div", { class: "samples-grid" }, CONFIG.samples.map((sm) => {
-              const meta = SAMPLE_NAMES[sm.id] || [sm.name, ""];
-              return h("button", { class: "sample", onclick: () => sample(sm.id) },
-                h("b", { text: meta[0] }), h("span", { class: "small muted", text: meta[1] }), h("span", { class: "sample-go", "aria-hidden": "true", text: "→" }));
-            }))) : null,
-          error ? h("div", { class: "alert alert-err", text: error }) : null)),
+          error ? h("div", { class: "alert alert-err", text: error }) : null),
+        CONFIG.samples.length ? h("div", { class: "samples" },
+          h("h3", { text: "Нет документа под рукой? Проверьте пример" }),
+          h("div", { class: "sample-list" }, CONFIG.samples.map((sm) => {
+            const [name, hint] = SAMPLE_NAMES[sm.id] || [sm.name, ""];
+            return h("button", { class: "sample", onclick: () => sample(sm.id) },
+              h("span", { class: "sheet", "aria-hidden": "true" }), h("span", {}, h("b", { text: name }), h("span", { text: hint })));
+          }))) : null),
       h("aside", { class: "card card-pad" },
         h("h2", { text: "Как работает проверка" }),
-        h("ol", { class: "steps-list", style: "margin-top:16px" },
-          stepItem("Чтение и нарезка", "PDF, DOCX, Markdown → отдельные требования с номерами строк"),
-          stepItem("Правила", "Размытые слова, заглушки, HTTP-контракт, типы, единицы — одинаково при каждом запуске"),
-          stepItem("LLM-аналитик", "Каждое требование и набор целиком: полнота, однозначность, противоречия"),
-          stepItem("Проверка цитат кодом", "Замечание без найденной в документе цитаты отбрасывается"),
-          stepItem("Критик и вопросы автору", "Отсев ложных срабатываний, уточняющие вопросы с вариантами ответа"),
-          stepItem("Заключение", "Можно ли начинать разработку и тестирование, что исправить первым")))));
+        h("ol", { class: "steps-list", style: "margin-top:18px" },
+          stepItem("Чтение и нарезка", "Документ делится на отдельные требования, у каждого сохраняются номера строк."),
+          stepItem("Правила", "Размытые слова, заглушки, HTTP-контракт, типы и единицы. Результат одинаков при каждом запуске."),
+          stepItem("LLM-аналитик", "Каждое требование и весь набор: полнота, однозначность, противоречия."),
+          stepItem("Проверка цитат", "Замечание без цитаты, найденной в документе, отбрасывается."),
+          stepItem("Критик и вопросы", "Отсев ложных срабатываний и вопросы автору с вариантами ответа."),
+          stepItem("Заключение", "Можно ли начинать разработку и тестирование и что исправить первым.")))));
 }
 function stepItem(t, d) { return h("li", {}, h("b", { text: t }), h("span", { text: d })); }
 function svgIcon() {
@@ -238,7 +234,8 @@ function renderProgress(d) {
     h("div", { class: "card card-pad" },
       h("div", { class: "row" }, h("h1", { text: "Анализ документа" }), h("span", { class: "spacer" }),
         h("span", { class: "chip mono", text: `${Math.round(d.elapsed)} с` })),
-      h("p", { class: "muted", style: "margin:6px 0 16px" }, h("b", { text: d.name }), " · с LLM проверка занимает 1–3 минуты: бесплатный тариф ограничивает частоту запросов."),
+      h("p", { class: "muted", style: "margin:8px 0 18px" }, h("b", { text: d.name }), h("br"),
+        "С LLM проверка занимает 1–3 минуты: бесплатный тариф ограничивает частоту запросов."),
       h("div", { class: "bar", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": String(total), "aria-valuenow": String(done) },
         h("i", { style: `width:${Math.round((done / total) * 100)}%` })),
       h("ol", { class: "stages", style: "margin-top:12px" },
@@ -285,10 +282,9 @@ function renderReport(tab, arg, keepScroll) {
   const content = h("div");
   app.replaceChildren(
     h("section", { class: `card verdict ${status}` },
-      h("div", { class: "verdict-icon", "aria-hidden": "true", text: status === "ok" ? "✓" : status === "warn" ? "!" : "✕" }),
       h("div", {},
-        h("div", { class: "small muted", text: R.run.doc_name }),
-        h("h1", { text: title }),
+        h("div", { class: "verdict-doc", text: `Заключение по документу «${R.run.doc_name}»` }),
+        h("div", { class: "stamp" }, h("h1", { text: title })),
         h("p", { text: V.summary }),
         h("div", { class: "flags" },
           flag(V.ready_for_dev, "Разработка"), flag(V.ready_for_test, "Тестирование"),
@@ -305,7 +301,7 @@ function renderReport(tab, arg, keepScroll) {
   if (keepScroll) window.scrollTo(0, y);
 }
 function flag(ok, label) {
-  return h("span", { class: `badge ${ok ? "sev-ok" : "sev-critical"}`, text: `${label}: ${ok ? "можно" : "нельзя"}` });
+  return h("span", { class: `gate ${ok ? "yes" : "no"}`, text: `${label}: ${ok ? "можно начинать" : "нельзя начинать"}` });
 }
 function exportMenu() {
   const list = h("div", { class: "menu-list", hidden: true },
@@ -331,16 +327,17 @@ function viewOverview(root) {
     s("circle", { class: "fg", cx: 32, cy: 32, r: 27, stroke: color, "stroke-dasharray": `${(C * q) / 100} ${C}` }),
     s("text", { x: 32, y: 32 }, String(q)));
 
-  const kpis = h("div", { class: "kpis" },
-    h("div", { class: "card kpi kpi-quality" }, ring, h("div", {},
-      h("div", { class: "k-label", text: "Индекс качества" }),
-      h("div", { class: "k-sub", text: "доля требований без критичных и существенных замечаний" }))),
-    kpi("Требований", S.requirements_total, `${rs.ok} без замечаний`, `#/job/${JOB.id}/requirements`),
-    kpi("Дефектов", S.issues_total, h("span", { class: "sev-dots" },
-      h("span", { class: "d-crit", title: "критичные", text: sev.critical }), h("span", { class: "d-major", title: "существенные", text: sev.major }),
-      h("span", { class: "d-minor", title: "незначительные", text: sev.minor })), `#/job/${JOB.id}/issues`),
-    kpi("Противоречий", S.contradictions, "между требованиями и частями документа", `#/job/${JOB.id}/contradictions`),
-    kpi("Вопросов автору", S.questions_total, `${S.questions_blocking} блокирующих`, `#/job/${JOB.id}/questions`));
+  const sevDots = h("div", { class: "sev-dots" },
+    [["critical", "var(--crit)"], ["major", "var(--major)"], ["minor", "var(--minor)"]].map(([k, c]) =>
+      h("span", { title: SEV[k] }, h("i", { style: `background:${c}` }), String(sev[k]))));
+  const kpis = h("div", { class: "card stats" },
+    h("div", { class: "stat stat-quality" }, ring, h("div", {},
+      h("div", { class: "l", style: "margin-top:0", text: "Индекс качества" }),
+      h("div", { class: "s", text: "Доля требований без критичных и существенных замечаний" }))),
+    kpi("требований", S.requirements_total, `${rs.ok} без замечаний`, `#/job/${JOB.id}/requirements`),
+    kpi("дефектов", S.issues_total, sevDots, `#/job/${JOB.id}/issues`),
+    kpi("противоречий", S.contradictions, "между частями документа", `#/job/${JOB.id}/contradictions`),
+    kpi("вопросов автору", S.questions_total, `${S.questions_blocking} блокируют работу`, `#/job/${JOB.id}/questions`));
 
   const crits = Object.entries(S.issues_by_criterion);
   const maxC = Math.max(1, ...crits.map(([, n]) => n));
@@ -366,12 +363,12 @@ function viewOverview(root) {
     h("div", { class: "card-body" }, R.verdict.top_fixes.length ? h("ul", { class: "fixlist" }, R.verdict.top_fixes.map((f) => {
       const id = (f.match(/^D-\d+/) || [""])[0];
       const iss = R.issues.find((i) => i.iid === id);
-      if (!iss) return h("li", {}, h("span"), h("div", { text: f }));
-      return h("li", {}, sevBadge(iss.severity, true),
-        h("div", {},
-          h("a", { class: "fix-title", href: `#/job/${JOB.id}/issues/${id}` }, h("span", { class: "issue-id", text: id }), " ", iss.title),
-          iss.req_ids.length && iss.req_ids.length <= 3 ? h("span", { class: "small faint nowrap", text: ` · ${iss.req_ids.join(", ")}` }) : null,
-          iss.suggestion ? h("div", { class: "small muted fix-how", text: iss.suggestion }) : null));
+      const rest = f.replace(/^D-\d+\s*/, "");
+      const m = rest.match(/^(\([^)]*\):\s*)?(.*?)\s+—\s+(.*)$/);
+      return h("li", {}, h("div", {},
+        h("div", { class: "fx-head" }, h("a", { href: `#/job/${JOB.id}/issues/${id}`, text: m ? m[2] : rest }),
+          iss ? sevBadge(iss.severity) : null, h("span", { class: "small faint", text: id })),
+        m ? h("div", { class: "fx-text", text: m[3] } ) : null));
     })) : h("p", { class: "muted", text: "Критичных и существенных замечаний нет." })));
 
   const overall = R.run.overall ? h("div", { class: "card" }, h("div", { class: "card-head" }, h("h2", { text: "Оценка документа (LLM)" })),
@@ -382,8 +379,9 @@ function viewOverview(root) {
     h("b", { text: "Часть проверок LLM не выполнена. " }), `${R.run.llm_errors.length} шаг(ов): подробности во вкладке «Паспорт». Проверки правилами выполнены полностью.`));
 }
 function kpi(label, value, sub, href) {
-  const inner = [h("div", { class: "k-label", text: label }), h("div", { class: "k-value", text: value }), h("div", { class: "k-sub" }, sub)];
-  return href ? h("a", { class: "card kpi", href, style: "text-decoration:none;color:inherit" }, inner) : h("div", { class: "card kpi" }, inner);
+  const inner = [h("div", { class: "v", text: value }), h("div", { class: "l", text: label }),
+    sub instanceof Node ? sub : h("div", { class: "s", text: sub })];
+  return href ? h("a", { class: "stat", href }, inner) : h("div", { class: "stat" }, inner);
 }
 function legend(c, t) { return h("span", {}, h("i", { style: `background:${c}` }), t); }
 
@@ -447,7 +445,7 @@ function renderReqDetail(box, r, reqCrit) {
     h("div", { class: "card-head" }, h("div", {}, h("h2", { text: `${r.rid}${r.doc_id !== "—" ? " · " + r.doc_id : ""}` }),
       h("div", { class: "small muted", text: `${r.category} · ${r.section}` })), sevBadge(JOB.report.stats.requirement_status[r.rid])),
     h("div", { class: "card-body stack" },
-      h("div", { class: "quote" }, h("q", { text: r.text }), h("a", { href: `#/job/${JOB.id}/document/${r.line_start}`, text: loc(r) })),
+      h("div", { class: "quote plain" }, h("a", { href: `#/job/${JOB.id}/document/${r.line_start}`, text: r.line_start === r.line_end ? `стр. ${r.line_start}` : `стр. ${r.line_start}–${r.line_end}` }), h("q", { text: r.text })),
       h("h3", { text: "Критерии ISO/IEC/IEEE 29148, п. 5.2.5" }),
       h("div", { class: "crit-grid" }, reqCrit.map((k) => {
         const hit = iss.filter((i) => i.criterion === k)[0];
@@ -467,7 +465,7 @@ function issueCard(i, opts = {}) {
   const quotes = i.contradiction && i.quotes.length >= 2 && !opts.compact
     ? h("div", { class: "vs" }, quoteEl(i.quotes[0]), h("span", { class: "x", "aria-label": "против", text: "≠" }), quoteEl(i.quotes[1]))
     : i.quotes.map(quoteEl);
-  return h("article", { class: `card issue${resolved ? " resolved" : ""}`, id: `issue-${i.iid}` },
+  return h("article", { class: `card issue ${i.severity}${resolved ? " resolved" : ""}`, id: `issue-${i.iid}` },
     h("div", { class: "issue-head" }, h("span", { class: "issue-id", text: i.iid }), h("span", { class: "issue-title", text: i.title }), sevBadge(i.severity)),
     h("div", { class: "issue-meta" },
       h("span", { class: "tag", title: critRef(i.criterion), text: `${critName(i.criterion)} · ${critRef(i.criterion)}` }),
@@ -481,8 +479,10 @@ function issueCard(i, opts = {}) {
     !opts.compact && i.req_ids.length ? h("div", { class: "small muted", style: "margin-top:8px" }, "Требования: ", reqLinks, i.req_ids.length > 8 ? ` и ещё ${i.req_ids.length - 8}` : "") : null);
 }
 function quoteEl(q) {
-  return h("div", { class: "quote" }, h("q", { text: q.text }),
-    q.line ? h("a", { href: `#/job/${JOB.id}/document/${q.line}`, title: "Показать в документе", text: `стр. ${q.line}` }) : h("span"));
+  return h("div", { class: "quote" },
+    q.line ? h("a", { href: `#/job/${JOB.id}/document/${q.line}`, title: "Показать строку в документе", text: `стр. ${q.line}` })
+      : h("span", { class: "ln-ref", text: "—" }),
+    h("q", { text: q.text }));
 }
 
 // ---- Дефекты
@@ -508,7 +508,7 @@ function viewIssues(root, arg) {
   draw();
   root.append(h("div", { class: "filters" }, sevBtns, critSel, srcSel, search,
     h("button", { class: "btn btn-ghost btn-sm", onclick: () => { state.sev.clear(); state.crit = ""; state.src = ""; state.q = ""; renderReport("issues"); } }, "Сбросить")), list);
-  if (arg) setTimeout(() => { const el = document.getElementById(`issue-${arg}`); if (el) { el.scrollIntoView({ block: "start" }); el.style.outline = "2px solid var(--focus)"; } }, 50);
+  if (arg) setTimeout(() => { const el = document.getElementById(`issue-${arg}`); if (el) { el.scrollIntoView({ block: "center" }); el.classList.add("flash"); } }, 50);
 }
 
 // ---- Противоречия
@@ -543,7 +543,7 @@ function viewQuestions(root) {
   const counter = h("span", { class: "small" });
   function update() {
     let n = 0;
-    for (const [qid, ta] of Object.entries(areas)) {
+    for (const ta of Object.values(areas)) {
       const has = ta.value.trim() !== "";
       n += has;
       ta.closest(".question")?.classList.toggle("answered", has);
