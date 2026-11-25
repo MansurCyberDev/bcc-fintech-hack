@@ -26,7 +26,7 @@ python main.py docs/requirements.md reports/report.md
 2. Нажмите **Create API key** — ключ бесплатный (тариф Free достаточен для хакатона).
 3. Скопируйте ключ в файл `.env` в корне репозитория: `GEMINI_API_KEY=...`
 
-Модель по умолчанию — **`gemini-flash-latest`** (псевдоним Google на актуальную Gemini Flash; в паспорте отчёта пишется фактическая модель). Если модель перегружена (HTTP 503) или снята, агент сам переключается на `gemini-flash-lite-latest` (`GEMINI_FALLBACK_MODELS`). Если дневная квота бесплатного ключа исчерпана (HTTP 429), агент не ждёт, а сразу доделывает отчёт правилами и пишет об этом в паспорте. Сменить модель: `GEMINI_MODEL=...` в `.env`. Посмотреть модели, доступные по вашему ключу: `python main.py --list-models`.
+Модель по умолчанию — **`gemini-flash-latest`** (псевдоним Google на актуальную Gemini Flash; в паспорте отчёта пишется фактическая модель). Если модель перегружена (HTTP 503), снята или у неё кончилась дневная квота (HTTP 429), агент сам переходит к следующей модели из списка `GEMINI_FALLBACK_MODELS` (по умолчанию `gemini-flash-lite-latest`, `gemini-flash-latest`, `gemini-2.5-flash-lite`, `gemini-2.5-flash`). Если не отвечает ни одна, агент доделывает отчёт правилами и пишет об этом в паспорте. Сменить модель: `GEMINI_MODEL=...` в `.env`. Посмотреть модели, доступные по вашему ключу: `python main.py --list-models`.
 
 Можно использовать любую OpenAI-совместимую модель (OpenAI, OpenRouter, Groq, локальный Ollama): в `.env` укажите `LLM_PROVIDER=openai`, `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL`.
 

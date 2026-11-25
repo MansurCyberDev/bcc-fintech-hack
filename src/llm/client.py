@@ -35,6 +35,7 @@ class LLMClient:
         self.disabled = ""      # причина, если LLM выключена до конца прогона
         self.model = settings.model
         self._last_call = 0.0
+        self._dead: set[str] = set()  # модели без квоты или снятые — не пробуем повторно
 
     # ------------------------------------------------------------------ public
     def generate_json(self, system: str, user: str, purpose: str = "") -> Any:
@@ -70,8 +71,10 @@ class LLMClient:
         if self.disabled:
             raise LLMError(f"LLM отключена в этом прогоне: {self.disabled}")
         last_err: Exception | None = None
-        models = [self.model] + [m for m in self.s.fallback_models if m != self.model]
-        for model in models:
+        models = [m for m in [self.model] + [m for m in self.s.fallback_models if m != self.model]
+                  if m not in self._dead]
+        for idx, model in enumerate(models):
+            has_next = idx + 1 < len(models)
             for attempt in range(self.s.max_retries + 1):
                 if self.calls >= self.s.max_calls:
                     raise LLMError(f"Достигнут лимит вызовов LLM за прогон ({self.s.max_calls}). Увеличьте LLM_MAX_CALLS.")
@@ -91,16 +94,23 @@ class LLMClient:
                         self.model = model
                     return out
                 except _QuotaExhausted as e:
-                    # дневная квота ключа исчерпана: повторы бессмысленны — выключаем LLM до конца прогона
-                    self.disabled = str(e)
-                    raise LLMError(str(e)) from e
+                    # дневная квота этой модели исчерпана: повторы бессмысленны, пробуем следующую модель
+                    last_err = e
+                    self._dead.add(model)
+                    log.warning("LLM %s: у модели %s исчерпана квота", purpose, model)
+                    if not has_next:
+                        self.disabled = str(e)
+                        raise LLMError(str(e)) from e
+                    break
                 except _ModelUnavailable as e:
                     last_err = e
+                    self._dead.add(model)
                     log.warning("LLM %s: модель %s недоступна: %s", purpose, model, e)
                     break  # к следующей модели
                 except _Retryable as e:
                     last_err = e
-                    if attempt >= self.s.max_retries:
+                    # перегрузка (503): не ждём долго, если есть другая модель — переходим к ней
+                    if attempt >= self.s.max_retries or (has_next and e.overloaded and attempt >= 1):
                         break
                     delay = min(30.0, e.retry_after or 2 ** (attempt + 1) + random.uniform(0, 1))
                     log.warning("LLM %s: %s; повтор через %.0f c", purpose, e, delay)
@@ -169,7 +179,8 @@ class LLMClient:
                                     re.search(r"not found|not supported|no longer available", msg, re.I)):
             raise _ModelUnavailable(f"HTTP {r.status_code}: {msg}")
         if r.status_code == 429 or r.status_code >= 500:
-            raise _Retryable(f"HTTP {r.status_code}: {msg}", retry_after=_retry_after(r))
+            raise _Retryable(f"HTTP {r.status_code}: {msg}", retry_after=_retry_after(r),
+                             overloaded=r.status_code == 503)
         if r.status_code in (401, 403):
             raise LLMError(f"Ключ API отклонён (HTTP {r.status_code}): {msg}")
         raise LLMError(f"Ошибка LLM API (HTTP {r.status_code}): {msg}")
@@ -184,9 +195,10 @@ class _ModelUnavailable(Exception):
 
 
 class _Retryable(Exception):
-    def __init__(self, msg: str, retry_after: float | None = None):
+    def __init__(self, msg: str, retry_after: float | None = None, overloaded: bool = False):
         super().__init__(msg)
         self.retry_after = retry_after
+        self.overloaded = overloaded
 
 
 def _error_message(r: requests.Response) -> str:

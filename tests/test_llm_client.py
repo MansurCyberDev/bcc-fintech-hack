@@ -118,3 +118,22 @@ def test_truncated_json_is_salvaged():
     cut = '{"issues": [{"title": "A", "quote": "x"}, {"title": "B", "quo'
     data = parse_json(cut)
     assert data["issues"] == [{"title": "A", "quote": "x"}]
+
+
+def test_quota_of_one_model_moves_to_next(monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    body = {"error": {"message": "You exceeded your current quota", "details": [{"quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}}
+    sess = FakeSession([Resp(429, body), gemini_ok('{"ok": 3}'), gemini_ok('{"ok": 4}')])
+    c = LLMClient(settings(fallback_models=("lite",)), session=sess)
+    assert c.generate_json("s", "u") == {"ok": 3}
+    assert not c.disabled and c.model == "lite"
+    assert c.generate_json("s", "u") == {"ok": 4}     # модель без квоты больше не пробуем
+    assert "/models/lite:" in sess.calls[2][0]
+
+
+def test_overload_switches_model_quickly(monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    sess = FakeSession([Resp(503, {"error": {"message": "high demand"}})] * 2 + [gemini_ok('{"ok": 5}')])
+    c = LLMClient(settings(max_retries=4, fallback_models=("lite",)), session=sess)
+    assert c.generate_json("s", "u") == {"ok": 5}
+    assert len(sess.calls) == 3 and c.model == "lite"

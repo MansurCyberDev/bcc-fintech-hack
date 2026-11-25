@@ -65,7 +65,7 @@ def load_settings() -> Settings:
         key = os.getenv("GEMINI_API_KEY", "") or os.getenv("GOOGLE_API_KEY", "")
         # «-latest» — псевдоним Google на актуальную Flash-модель: не ломается, когда старые версии снимают
         model = os.getenv("GEMINI_MODEL", "") or "gemini-flash-latest"
-        fallbacks = os.getenv("GEMINI_FALLBACK_MODELS", "gemini-flash-lite-latest")
+        fallbacks = os.getenv("GEMINI_FALLBACK_MODELS", "gemini-flash-lite-latest,gemini-flash-latest,gemini-2.5-flash-lite,gemini-2.5-flash")
         base = os.getenv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta")
     elif provider in ("openai", "openai-compatible"):
         provider = "openai"
@@ -82,7 +82,7 @@ def load_settings() -> Settings:
         base_url=base.rstrip("/"),
         timeout=_int("LLM_TIMEOUT", 120),
         max_retries=_int("LLM_MAX_RETRIES", 3),
-        max_calls=_int("LLM_MAX_CALLS", 30),
+        max_calls=_int("LLM_MAX_CALLS", 60),
         batch_size=max(1, _int("LLM_BATCH_SIZE", 12)),
         temperature=_float("LLM_TEMPERATURE", 0.1),
         max_doc_chars=_int("LLM_MAX_DOC_CHARS", 150_000),
