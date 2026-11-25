@@ -3,20 +3,23 @@
 .env.*
 !.env.example
 
-# Node
-node_modules/
-dist/
-build/
-.next/
-
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
 .venv/
 venv/
+env/
+build/
+dist/
 
-# OS / IDE
-.DS_Store
-Thumbs.db
+# Node
+node_modules/
+npm-debug.log*
+
+# IDE / OS
 .vscode/
 .idea/
+*.swp
+.DS_Store
+Thumbs.db
