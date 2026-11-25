@@ -46,6 +46,7 @@ class Settings:
     max_doc_chars: int       # сколько символов документа максимум отдаём модели
     min_interval: float      # пауза между запросами (бесплатный тариф Gemini ограничивает RPM)
     fallback_models: tuple = ()  # запасные модели, если основная недоступна/перегружена
+    extra_keys: tuple = ()       # запасные ключи: переход на следующий, когда у ключа кончилась квота
 
     @property
     def llm_enabled(self) -> bool:
@@ -62,7 +63,10 @@ def load_settings() -> Settings:
     _load_dotenv()
     provider = os.getenv("LLM_PROVIDER", "gemini").strip().lower()
     if provider == "gemini":
-        key = os.getenv("GEMINI_API_KEY", "") or os.getenv("GOOGLE_API_KEY", "")
+        keys = [k.strip() for k in (os.getenv("GEMINI_API_KEY", "") or os.getenv("GOOGLE_API_KEY", "")).split(",")
+                + os.getenv("GEMINI_API_KEYS", "").split(",") if k.strip()]
+        keys = list(dict.fromkeys(keys))
+        key = keys[0] if keys else ""
         # «-latest» — псевдоним Google на актуальную Flash-модель: не ломается, когда старые версии снимают
         model = os.getenv("GEMINI_MODEL", "") or "gemini-flash-latest"
         fallbacks = os.getenv("GEMINI_FALLBACK_MODELS", "gemini-flash-lite-latest,gemini-flash-latest")
@@ -75,6 +79,8 @@ def load_settings() -> Settings:
         base = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
     else:
         provider, key, model, base, fallbacks = "none", "", "", "", ""
+    if provider != "gemini":
+        keys = [key] if key else []
     return Settings(
         provider=provider,
         api_key=key.strip(),
@@ -88,4 +94,5 @@ def load_settings() -> Settings:
         max_doc_chars=_int("LLM_MAX_DOC_CHARS", 150_000),
         min_interval=_float("LLM_MIN_INTERVAL", 4.0),
         fallback_models=tuple(m.strip() for m in fallbacks.split(",") if m.strip()),
+        extra_keys=tuple(keys[1:]),
     )

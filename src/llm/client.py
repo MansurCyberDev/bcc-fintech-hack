@@ -36,6 +36,8 @@ class LLMClient:
         self.model = settings.model
         self._last_call = 0.0
         self._dead: set[str] = set()  # модели без квоты или снятые — не пробуем повторно
+        self._keys = [settings.api_key] + list(settings.extra_keys)
+        self._key = self._keys[0]
         self._chain: list[str] | None = None  # запасные модели (уточняются по списку моделей ключа)
 
     # ------------------------------------------------------------------ public
@@ -56,12 +58,12 @@ class LLMClient:
 
     def list_models(self) -> list[str]:
         if self.s.provider == "gemini":
-            r = self.http.get(f"{self.s.base_url}/models", headers={"x-goog-api-key": self.s.api_key},
+            r = self.http.get(f"{self.s.base_url}/models", headers={"x-goog-api-key": self._key},
                               timeout=self.s.timeout)
             self._raise_for(r)
             return [m["name"].removeprefix("models/") for m in r.json().get("models", [])
                     if "generateContent" in m.get("supportedGenerationMethods", [])]
-        r = self.http.get(f"{self.s.base_url}/models", headers={"Authorization": f"Bearer {self.s.api_key}"},
+        r = self.http.get(f"{self.s.base_url}/models", headers={"Authorization": f"Bearer {self._key}"},
                           timeout=self.s.timeout)
         self._raise_for(r)
         return [m.get("id", "") for m in r.json().get("data", [])]
@@ -96,8 +98,14 @@ class LLMClient:
                         self.model = model
                     return out
                 except _QuotaExhausted as e:
-                    # дневная квота этой модели исчерпана: повторы бессмысленны, пробуем следующую модель
+                    # дневная квота исчерпана: сначала другой ключ (квоты считаются по ключу), потом другая модель
                     last_err = e
+                    nxt = self._keys.index(self._key) + 1
+                    if nxt < len(self._keys):
+                        self._key = self._keys[nxt]
+                        self._dead.clear()
+                        log.warning("LLM %s: у ключа %d кончилась квота, перехожу на ключ %d", purpose, nxt, nxt + 1)
+                        continue
                     self._dead.add(model)
                     log.warning("LLM %s: у модели %s исчерпана квота", purpose, model)
                     if not has_next:
@@ -159,7 +167,7 @@ class LLMClient:
             },
         }
         try:
-            r = self.http.post(url, json=body, headers={"x-goog-api-key": self.s.api_key}, timeout=self.s.timeout)
+            r = self.http.post(url, json=body, headers={"x-goog-api-key": self._key}, timeout=self.s.timeout)
         except requests.RequestException as e:
             raise _Retryable(f"сетевая ошибка: {type(e).__name__}") from e
         self._raise_for(r)
@@ -183,7 +191,7 @@ class LLMClient:
             "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
         }
         try:
-            r = self.http.post(url, json=body, headers={"Authorization": f"Bearer {self.s.api_key}"},
+            r = self.http.post(url, json=body, headers={"Authorization": f"Bearer {self._key}"},
                                timeout=self.s.timeout)
         except requests.RequestException as e:
             raise _Retryable(f"сетевая ошибка: {type(e).__name__}") from e

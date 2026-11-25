@@ -151,3 +151,12 @@ def test_fallback_chain_uses_models_available_to_key(monkeypatch):
     c = LLMClient(settings(fallback_models=("gemini-2.5-flash-lite",)), session=sess)
     assert c.generate_json("s", "u") == {"ok": 6}
     assert c.model == "gemini-3.5-flash-lite"   # снятая 2.5 убрана, новейшая доступная Flash — первой
+
+
+def test_second_key_used_when_quota_exhausted(monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    body = {"error": {"message": "You exceeded your current quota", "details": [{"quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}}
+    sess = FakeSession([Resp(429, body), gemini_ok('{"ok": 7}')])
+    c = LLMClient(settings(api_key="k1", extra_keys=("k2",)), session=sess)
+    assert c.generate_json("s", "u") == {"ok": 7}
+    assert sess.calls[0][2]["x-goog-api-key"] == "k1" and sess.calls[1][2]["x-goog-api-key"] == "k2"
