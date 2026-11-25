@@ -113,9 +113,11 @@ class LLMClient:
                     last_err = e
                     # перегрузка (503): не ждём долго, если есть другая модель — переходим к ней
                     if attempt >= self.s.max_retries or (has_next and e.overloaded and attempt >= 1):
+                        if has_next:
+                            log.warning("LLM %s: модель %s не отвечает (%s), пробую %s", purpose, model, e, models[idx + 1])
                         break
                     delay = min(30.0, e.retry_after or 2 ** (attempt + 1) + random.uniform(0, 1))
-                    log.warning("LLM %s: %s; повтор через %.0f c", purpose, e, delay)
+                    log.warning("LLM %s [%s]: %s; повтор через %.0f c", purpose, model, e, delay)
                     time.sleep(delay)
             if self.s.provider != "gemini":
                 break
