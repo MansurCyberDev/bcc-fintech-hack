@@ -8,12 +8,16 @@ from pathlib import Path
 from ..models import Report
 from . import html as html_report
 from . import markdown as md_report
+from .stats import compute_stats, is_contradiction
 
 
 def to_dict(report: Report) -> dict:
     d = dataclasses.asdict(report)
     d["document"] = {k: v for k, v in d["document"].items() if k != "text"}
     d["rejected"] = [{"issue": dataclasses.asdict(i), "reason": why} for i, why in report.rejected]
+    for i, src in zip(d["issues"], report.issues):
+        i["contradiction"] = is_contradiction(src)
+    d["stats"] = compute_stats(report)
     return d
 
 

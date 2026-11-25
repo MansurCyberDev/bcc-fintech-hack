@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from collections import Counter
 
+from .stats import requirement_status
 from ..models import (CRITERIA, REQUIREMENT_CRITERIA, SET_CRITERIA, SEVERITY_ICON, SEVERITY_RU, Issue, Report,
                       criterion_name, criterion_source)
 
@@ -214,11 +215,11 @@ def render(report: Report) -> str:
     # 6. Сводка
     a("## 6. Сводка")
     a("")
-    with_issues = {x for i in r.issues for x in i.req_ids}
+    status = requirement_status(real, r.issues)
     a("| Показатель | Значение |")
     a("| :--- | ---: |")
     a(f"| Требований проверено | {len(real)} |")
-    a(f"| Требований без замечаний | {len([q for q in real if q.rid not in with_issues])} |")
+    a(f"| Требований без замечаний | {sum(1 for v in status.values() if v == "ok")} |")
     a(f"| Всего нарушений | {len(r.issues)} |")
     a(f"| 🔴 Критичных | {sev['critical']} |")
     a(f"| 🟠 Существенных | {sev['major']} |")

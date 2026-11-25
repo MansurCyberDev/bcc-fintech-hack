@@ -21,6 +21,7 @@ from .clarify import (apply_answers, ask_interactive, build_questions_llm, build
 from .config import ROOT, Settings
 from .ingest import load_document
 from .llm.client import LLMClient
+from .report.stats import requirement_status
 from .models import Issue, Report, Requirement, RunInfo, Verdict, criterion_name
 from .split import split_requirements
 from .verify import verify_issues
@@ -240,8 +241,8 @@ def make_verdict(issues: list[Issue], real: list[Requirement], resolved: set[str
     test_block = [i for i in crit if i.criterion in TEST_BLOCKING]
     ready_dev = not crit
     ready_test = not test_block and not any(i.rule_id == "R-PLACEHOLDER" for i in crit)
-    with_issues = {r for i in open_ for r in i.req_ids}
-    clean = [r for r in real if r.rid not in with_issues]
+    status = requirement_status(real, open_)
+    clean = [r for r in real if status[r.rid] == "ok"]
 
     if ready_dev and not major:
         summary = "Документ можно передавать в разработку и тестирование. Замечания носят редакционный характер."
