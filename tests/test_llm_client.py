@@ -111,3 +111,10 @@ def test_overloaded_model_falls_back(monkeypatch):
     c = LLMClient(settings(fallback_models=("lite",)), session=sess)
     assert c.generate_json("s", "u") == {"ok": 2}
     assert c.model == "lite"
+
+
+def test_truncated_json_is_salvaged():
+    # модель оборвала ответ посреди второго замечания: первое должно сохраниться
+    cut = '{"issues": [{"title": "A", "quote": "x"}, {"title": "B", "quo'
+    data = parse_json(cut)
+    assert data["issues"] == [{"title": "A", "quote": "x"}]

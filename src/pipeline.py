@@ -152,11 +152,29 @@ def _lines(i: Issue) -> set[int]:
     return {q.line for q in i.quotes if q.line}
 
 
+_STOP = {"требование", "требования", "документ", "документе", "нет", "не", "для", "при", "или", "что", "как",
+         "указан", "указано", "описан", "описано", "отсутствует", "неполное", "неясно"}
+
+
+def _stems(text: str) -> set[str]:
+    import re
+    words = re.findall(r"[a-zA-Zа-яА-ЯёЁ0-9]+", text.lower())
+    return {w[:5] for w in words if (len(w) >= 4 or w.isascii() and len(w) >= 3) and w not in _STOP}
+
+
+def _topic_overlap(a: Issue, b: Issue) -> bool:
+    """Общие значимые основы слов в заголовках (GET, «заполн», «единиц», «201»…)."""
+    return bool(_stems(a.title) & _stems(b.title)) or bool(_stems(a.title + " " + a.explanation[:120])
+                                                           & _stems(b.title) & {"get", "post", "put", "200", "201", "400", "403", "404"})
+
+
 def _similar(a: Issue, b: Issue) -> bool:
     if a.scope == "requirement" and b.scope == "requirement" and not set(a.req_ids) & set(b.req_ids):
         return False
     if not _lines(a) & _lines(b):
         return False
+    if a.source != b.source and _topic_overlap(a, b):
+        return True  # правило и LLM про одно и то же место и одну тему
     if a.criterion == b.criterion and (a.source != b.source or
                                        difflib.SequenceMatcher(None, a.title.lower(), b.title.lower()).ratio() > 0.5):
         return True

@@ -227,4 +227,42 @@ def parse_json(text: str) -> Any:
                 return json.loads(t[a:b + 1])
             except json.JSONDecodeError:
                 continue
+    salvaged = _salvage(t)
+    if salvaged is not None:
+        return salvaged
     raise ValueError("Ответ модели не является JSON")
+
+
+def _salvage(t: str) -> Any:
+    """Обрезанный JSON (модель оборвала ответ): отрезаем хвост до последнего целого объекта и закрываем скобки."""
+    a = t.find("{")
+    if a < 0:
+        return None
+    body = t[a:]
+    ends = [i for i, ch in enumerate(body) if ch == "}"][::-1][:60]
+    for i in ends:
+        cand = body[:i + 1]
+        stack = []
+        in_str = esc = False
+        for ch in cand:
+            if in_str:
+                if esc:
+                    esc = False
+                elif ch == "\\":
+                    esc = True
+                elif ch == '"':
+                    in_str = False
+                continue
+            if ch == '"':
+                in_str = True
+            elif ch in "{[":
+                stack.append("}" if ch == "{" else "]")
+            elif ch in "}]" and stack:
+                stack.pop()
+        if in_str:
+            continue
+        try:
+            return json.loads(cand + "".join(reversed(stack)))
+        except json.JSONDecodeError:
+            continue
+    return None
