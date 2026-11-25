@@ -47,3 +47,30 @@ def test_clean_document_has_few_findings(tmp_path):
     _, _, issues = _run(tmp_path, text)
     assert not [i for i in issues if i.severity == "critical"]
     assert "R-SET-VERSION" not in {i.rule_id for i in issues}
+
+
+API_ENABLE_MD = """# Подписка
+
+## Часть B. REST API
+
+### Метод подключения подписки
+
+| Поле | Значение |
+| :--- | :--- |
+| Description | Подключение подписки |
+| REST type | GET |
+| Request URL | /sub/enable |
+
+#### 200. Successful
+Подписка подключена.
+
+#### 500. Error
+Внутренняя ошибка.
+"""
+
+
+def test_get_for_enable_and_missing_4xx(tmp_path):
+    _, _, issues = _run(tmp_path, API_ENABLE_MD)
+    ids = {i.rule_id for i in issues}
+    assert "R-HTTP-GET-MUTATION" in ids   # «Подключение» меняет состояние
+    assert "R-SET-API-NO-4XX" in ids      # есть 200 и 500, но ни одного 4xx

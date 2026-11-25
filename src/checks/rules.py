@@ -43,7 +43,8 @@ PLACEHOLDERS = [
     r"заполняются\b", r"заполняется\b", r"не заполнен", r"\bn/?a\b",
 ]
 
-MODIFY_WORDS = r"сохран|созда|измен|обнов|замен|удал|запис|save|create|update|delete|set[A-Z_]|replace"
+MODIFY_WORDS = (r"сохран|созда|измен|обнов|замен|удал|запис|подключ|отключ|выключ|активир|регистрац|отправ|списа|начисл|"
+                r"save|create|update|delete|set[A-Z_]|replace|enable|disable|activate|submit")
 
 
 def _clean(line: str) -> str:
@@ -161,7 +162,7 @@ def _http_rules(doc: Document, r: Requirement) -> list[Issue]:
     if has_get and re.search(MODIFY_WORDS, raw_all, re.I):
         qs = [q for q in (
             _line_quote(doc, r, r"\bGET\b"),
-            _line_quote(doc, r, r"Сохранени|save"),
+            _line_quote(doc, r, r"(?i)Description[^\n]*(?:" + MODIFY_WORDS + ")"),
             _line_quote(doc, r, r"curl\s+-G"),
         ) if q]
         out.append(Issue(
@@ -172,7 +173,7 @@ def _http_rules(doc: Document, r: Requirement) -> list[Issue]:
                          "логируют вместе с параметрами в URL. Это ошибка проектирования и риск ИБ."),
             quotes=qs, req_ids=[r.rid], rule_id="R-HTTP-GET-MUTATION",
             suggestion="Использовать PUT (замена настройки) или POST, параметры передавать в теле JSON.",
-            question="Метод должен сохранять порог или читать его? Если сохранять — согласны ли заменить GET на PUT/POST с телом запроса?",
+            question="Метод изменяет данные или только читает их? Если изменяет — согласны ли заменить GET на POST/PUT с телом запроса?",
         ))
 
     # 200 + Created
@@ -264,10 +265,10 @@ def check_set(doc: Document, reqs: list[Requirement]) -> list[Issue]:
                 criterion="consistent", severity="major", scope="set",
                 title=f"Суммы хранятся в разных единицах ({a} и {b})",
                 explanation=(f"В документе суммы указаны и в {a}, и в {b}. Не описано, где и как выполняется пересчёт "
-                             "и округление. Сравнение суммы с порогом может дать ошибку в 100 раз."),
+                             "и округление. Сравнение сумм в разных единицах может дать ошибку в 100 раз."),
                 quotes=[q for q in (qa, qb) if q], rule_id="R-SET-UNITS",
                 suggestion="Хранить все суммы в одной единице (минимальной) или явно описать правило пересчёта.",
-                question=f"В каких единицах сравнивать расходы с порогом: в {a} или в {b}? Где выполняется пересчёт?",
+                question=f"В каких единицах хранить и сравнивать суммы: в {a} или в {b}? Где выполняется пересчёт?",
             ))
 
     # 3. Дубликаты идентификаторов
@@ -421,6 +422,21 @@ def _api_set_rules(doc: Document, real: list[Requirement]) -> list[Issue]:
                 suggestion="Перечислить ровно те коды, которые возвращает метод, с условием и примером тела для каждого.",
                 question=f"Возвращает ли метод коды {', '.join(missing)}? Если да — в каких случаях?",
             ))
+
+    # b2) описаны коды ответа, но ни одного кода ошибки клиента (4xx)
+    if described and not any(c.startswith("4") for c in described):
+        first = min(described.values())
+        out.append(Issue(
+            criterion="complete", severity="major", scope="set",
+            title="Не описаны ответы на ошибки клиента (4xx)",
+            explanation=("В перечне статусов нет ни одного кода 4xx. Неясно, что вернёт сервис при неверных "
+                         "параметрах, отсутствии прав или ненайденном объекте, и как это проверить тестами."),
+            quotes=[Quote(_clean(lines[first - 1]), first, True)],
+            req_ids=[r.rid for r in api if r.line_start <= first <= r.line_end],
+            rule_id="R-SET-API-NO-4XX",
+            suggestion="Описать коды 400, 401/403, 404 (и другие нужные) с условием и примером тела ответа.",
+            question="Какие коды ошибок возвращает метод при неверных параметрах, нет прав или объект не найден?",
+        ))
 
     # c) Content-Type задан, но тело не используется
     ct = next((ln for ln in api_lines if re.search(r"Content-Type", lines[ln - 1], re.I)), None)
