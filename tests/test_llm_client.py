@@ -137,3 +137,17 @@ def test_overload_switches_model_quickly(monkeypatch):
     c = LLMClient(settings(max_retries=4, fallback_models=("lite",)), session=sess)
     assert c.generate_json("s", "u") == {"ok": 5}
     assert len(sess.calls) == 3 and c.model == "lite"
+
+
+def test_fallback_chain_uses_models_available_to_key(monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda s: None)
+
+    class Sess(FakeSession):
+        def get(self, url, headers=None, timeout=None):
+            names = ["gemini-2.0-flash", "gemini-3.5-flash-lite", "gemini-3.5-flash-image", "text-embedding-004"]
+            return Resp(200, {"models": [{"name": "models/" + n, "supportedGenerationMethods": ["generateContent"]}
+                                         for n in names]})
+    sess = Sess([Resp(503, {"error": {"message": "high demand"}})] * 2 + [gemini_ok('{"ok": 6}')])
+    c = LLMClient(settings(fallback_models=("gemini-2.5-flash-lite",)), session=sess)
+    assert c.generate_json("s", "u") == {"ok": 6}
+    assert c.model == "gemini-3.5-flash-lite"   # снятая 2.5 убрана, новейшая доступная Flash — первой

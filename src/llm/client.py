@@ -36,6 +36,7 @@ class LLMClient:
         self.model = settings.model
         self._last_call = 0.0
         self._dead: set[str] = set()  # модели без квоты или снятые — не пробуем повторно
+        self._chain: list[str] | None = None  # запасные модели (уточняются по списку моделей ключа)
 
     # ------------------------------------------------------------------ public
     def generate_json(self, system: str, user: str, purpose: str = "") -> Any:
@@ -71,8 +72,9 @@ class LLMClient:
         if self.disabled:
             raise LLMError(f"LLM отключена в этом прогоне: {self.disabled}")
         last_err: Exception | None = None
-        models = [m for m in [self.model] + [m for m in self.s.fallback_models if m != self.model]
-                  if m not in self._dead]
+        if self._chain is None:
+            self._chain = self._model_chain()
+        models = [m for m in [self.model] + [m for m in self._chain if m != self.model] if m not in self._dead]
         for idx, model in enumerate(models):
             has_next = idx + 1 < len(models)
             for attempt in range(self.s.max_retries + 1):
@@ -121,6 +123,28 @@ class LLMClient:
         if self.failed_in_row >= 2:
             self.disabled = f"два запроса подряд не удались ({last_err})"
         raise LLMError(f"LLM недоступна после повторов: {last_err}")
+
+    def _model_chain(self) -> list[str]:
+        """Запасные модели. Для Gemini сверяем их со списком моделей, доступных этому ключу:
+        убираем снятые и добавляем доступные Flash-модели, чтобы при перегрузке было куда переключиться."""
+        chain = list(self.s.fallback_models)
+        if self.s.provider != "gemini":
+            return chain
+        try:
+            available = self.list_models()
+        except Exception as e:  # список моделей — только подсказка, без него работаем как раньше
+            log.info("Не удалось получить список моделей: %s", e)
+            return chain
+        if not available:
+            return chain
+        names = set(available)
+        chain = [m for m in chain if m in names or m.endswith("-latest")]
+        skip = ("image", "tts", "audio", "live", "embed", "exp", "preview", "thinking", "8b")
+        extra = [m for m in available if "flash" in m and not any(x in m for x in skip) and m not in chain]
+        extra.sort(key=lambda m: [int(x) if x.isdigit() else 0 for x in re.findall(r"\d+", m)], reverse=True)
+        chain += extra[:4]
+        log.info("Запасные модели: %s", ", ".join(chain) or "нет")
+        return chain
 
     def _gemini(self, system: str, user: str, model: str) -> str:
         url = f"{self.s.base_url}/models/{model}:generateContent"
