@@ -101,6 +101,9 @@ function renderUpload(error) {
   const picked = h("div");
   const offline = h("input", { type: "checkbox", id: "offline", disabled: !CONFIG.llm_enabled, checked: !CONFIG.llm_enabled });
   const noCritic = h("input", { type: "checkbox", id: "nocritic" });
+  // На публичном сайте LLM включается только по коду доступа (бережём квоту Gemini)
+  const code = h("input", { type: "password", id: "code", autocomplete: "off",
+    placeholder: "Код доступа к ИИ (пусто — только правила)" });
   const errBox = h("div", { role: "alert" });
   const go = h("button", { class: "btn btn-lg", disabled: true, onclick: start }, "Проверить документ");
 
@@ -141,6 +144,7 @@ function renderUpload(error) {
     fd.append("file", file);
     if (offline.checked) fd.append("offline", "1");
     if (noCritic.checked) fd.append("no_critic", "1");
+    if (code.value.trim()) fd.append("code", code.value.trim());
     try {
       const r = await api("/api/analyze", { method: "POST", body: fd });
       location.hash = `#/job/${r.id}`;
@@ -153,7 +157,7 @@ function renderUpload(error) {
   async function sample(id) {
     try {
       const r = await api(`/api/sample/${id}`, { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ offline: offline.checked ? "1" : "", no_critic: noCritic.checked ? "1" : "" }) });
+        body: JSON.stringify({ offline: offline.checked ? "1" : "", no_critic: noCritic.checked ? "1" : "", code: code.value.trim() }) });
       location.hash = `#/job/${r.id}`;
     } catch (e) { errBox.replaceChildren(h("div", { class: "alert alert-err", text: e.message })); }
   }
@@ -176,7 +180,11 @@ function renderUpload(error) {
               h("span", { class: "muted small", text: CONFIG.llm_enabled ? "Быстро и без обращения к внешнему API. Смысловые проверки и противоречия не выполняются." : "Ключ LLM не найден в .env, доступна только проверка правилами." }))),
             h("label", { class: "opt", for: "nocritic" }, noCritic, h("span", {},
               h("b", { text: "Без критика" }), h("br"),
-              h("span", { class: "muted small", text: "На один запрос к LLM меньше. Критик отсеивает ложные срабатывания — оставьте его включённым для сдачи." })))),
+              h("span", { class: "muted small", text: "На один запрос к LLM меньше. Критик отсеивает ложные срабатывания — оставьте его включённым для сдачи." }))),
+            CONFIG.access_code ? h("label", { class: "opt", for: "code" }, h("span", { style: "flex:1" },
+              h("b", { text: "Код доступа к ИИ" }), h("br"),
+              h("span", { class: "muted small", text: "Это публичная демо-версия. Без кода документ проверяется только правилами." }), h("br"),
+              code)) : null),
           errBox,
           h("div", { class: "row" }, go),
           error ? h("div", { class: "alert alert-err", text: error }) : null),

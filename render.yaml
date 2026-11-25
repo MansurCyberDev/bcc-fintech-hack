@@ -1,0 +1,24 @@
+# Хостинг веб-платформы на Render (бесплатный тариф).
+# Render сам пересобирает и перезапускает сайт после каждого push в выбранную ветку.
+# Ключ Gemini задаётся в панели Render (Environment), в репозиторий его НЕ коммитим.
+services:
+  - type: web
+    name: bcc-requirements-validator
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # Render передаёт порт в переменной PORT; 0.0.0.0 — чтобы сервер был виден снаружи
+    startCommand: python web.py --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: GEMINI_MODEL
+        value: gemini-flash-lite-latest
+      # sync: false — Render спросит значение при создании, в файле его нет
+      - key: GEMINI_API_KEY
+        sync: false
+      # Код доступа к ИИ: без него сайт проверяет только правилами (бережём квоту)
+      - key: ACCESS_CODE
+        sync: false

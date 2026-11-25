@@ -21,6 +21,7 @@ import argparse
 import errno
 import json
 import logging
+import os
 import re
 import secrets
 import sys
@@ -58,6 +59,9 @@ JOBS: dict[str, dict] = {}
 LOCK = threading.Lock()
 WORKDIR = Path(tempfile.mkdtemp(prefix="arv-web-"))
 SETTINGS = load_settings()
+# Код доступа к LLM для публичного сайта: без него проверка идёт только правилами (квота Gemini не тратится).
+# Задаётся переменной окружения ACCESS_CODE на хостинге; локально можно не задавать.
+ACCESS_CODE = os.getenv("ACCESS_CODE", "").strip()
 
 
 # ------------------------------------------------------------------ задачи
@@ -175,6 +179,7 @@ class Handler(BaseHTTPRequestHandler):
         if p == "/api/config":
             return self._json({
                 "llm_enabled": SETTINGS.llm_enabled, "model": SETTINGS.model_label, "version": __version__,
+                "access_code": bool(ACCESS_CODE and SETTINGS.llm_enabled),
                 "formats": sorted(SUPPORTED), "max_mb": MAX_UPLOAD // (1024 * 1024),
                 "samples": [{"id": k, "name": v.name} for k, v in SAMPLES.items() if v.exists()],
             })
@@ -227,10 +232,17 @@ class Handler(BaseHTTPRequestHandler):
         return self._error("Не найдено", HTTPStatus.NOT_FOUND)
 
     @staticmethod
-    def _flags(fields: dict) -> tuple[bool, bool]:
+    def _flags(fields: dict) -> tuple[bool, bool, str]:
+        """Возвращает (offline, critic, ошибка). Ошибка — если введён неверный код доступа."""
         offline = str(fields.get("offline", "")) in ("1", "true", "on") or not SETTINGS.llm_enabled
         critic = str(fields.get("no_critic", "")) not in ("1", "true", "on")
-        return offline, critic
+        if ACCESS_CODE and not offline:
+            code = str(fields.get("code", "")).strip()
+            if not code:
+                offline = True  # без кода — только правила
+            elif not secrets.compare_digest(code.encode(), ACCESS_CODE.encode()):
+                return offline, critic, "Неверный код доступа. Оставьте поле пустым, чтобы проверить только правилами."
+        return offline, critic, ""
 
     def _analyze(self, data: bytes):
         ctype = self.headers.get("Content-Type", "")
@@ -247,6 +259,9 @@ class Handler(BaseHTTPRequestHandler):
                 fields[name] = (part.get_content() or "").strip()
         if file_part is None or not file_part.get_filename():
             return self._error("Выберите файл.")
+        offline, critic, err = self._flags(fields)
+        if err:
+            return self._error(err, HTTPStatus.FORBIDDEN)
         ext = Path(file_part.get_filename()).suffix.lower()
         if ext not in SUPPORTED:
             return self._error(f"Формат {ext or '(без расширения)'} не поддерживается. "
@@ -260,7 +275,6 @@ class Handler(BaseHTTPRequestHandler):
         d.mkdir()
         path = d / (safe_name if safe_name.lower().endswith(ext) else f"document{ext}")
         path.write_bytes(payload)
-        offline, critic = self._flags(fields)
         threading.Thread(target=run_job, args=(jid, path, offline, critic, True), daemon=True).start()
         self._json({"id": jid}, HTTPStatus.ACCEPTED)
 
@@ -272,7 +286,9 @@ class Handler(BaseHTTPRequestHandler):
             fields = json.loads(data or b"{}")
         except ValueError:
             fields = {}
-        offline, critic = self._flags(fields if isinstance(fields, dict) else {})
+        offline, critic, err = self._flags(fields if isinstance(fields, dict) else {})
+        if err:
+            return self._error(err, HTTPStatus.FORBIDDEN)
         jid = new_job(path.name)
         threading.Thread(target=run_job, args=(jid, path, offline, critic, False), daemon=True).start()
         self._json({"id": jid}, HTTPStatus.ACCEPTED)
