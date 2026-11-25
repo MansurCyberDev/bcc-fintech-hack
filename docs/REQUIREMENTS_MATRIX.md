@@ -20,7 +20,7 @@
 | RQ-13 | ТЗ §7 | README: ключ, куда положить, команда, где отчёт | `README.md` | вычитка | Verified |
 | RQ-14 | ТЗ §7 | `.env.example`, секреты не в репозитории | `.env.example`, `.gitignore` | `git ls-files` | Verified |
 | RQ-15 | ТЗ §7 | Файл зависимостей | `requirements.txt` | установка в чистом окружении | Verified |
-| RQ-16 | ТЗ §2 | Отчёт по выданному документу, сформированный агентом | `reports/` | прогон агента | см. TEST_REPORT |
+| RQ-16 | ТЗ §2 | Отчёт по выданному документу, сформированный агентом | `reports/` | реальный прогон Gemini (md и pdf) | Verified |
 | RQ-17 | САЙТ | Уточняющие вопросы автору спецификации | `src/clarify.py`, §5 отчёта | `test_pipeline.py`; `-i`, `--answers`, веб | Verified |
 | RQ-18 | САЙТ | Архитектура агентов: явные роли | `docs/ARCHITECTURE.md` | — | Implemented |
 | RQ-19 | КОМ | Работа без ключа (только правила) | `pipeline.run(use_llm=False)` | `test_cli.py` (offline) | Verified |
