@@ -69,7 +69,7 @@ def load_settings() -> Settings:
         key = keys[0] if keys else ""
         # «-latest» — псевдоним Google на актуальную Flash-модель: не ломается, когда старые версии снимают
         model = os.getenv("GEMINI_MODEL", "") or "gemini-flash-latest"
-        fallbacks = os.getenv("GEMINI_FALLBACK_MODELS", "gemini-flash-lite-latest,gemini-flash-latest")
+        fallbacks = os.getenv("GEMINI_FALLBACK_MODELS", "gemini-flash-latest,gemini-flash-lite-latest")
         base = os.getenv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta")
     elif provider in ("openai", "openai-compatible"):
         provider = "openai"

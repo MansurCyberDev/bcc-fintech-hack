@@ -202,8 +202,7 @@ def merge_duplicates(issues: list[Issue]) -> tuple[list[Issue], int]:
             dup.question = i.question
         if not dup.suggestion and i.suggestion:
             dup.suggestion = i.suggestion
-        if i.source == "llm" and i.explanation and i.explanation not in dup.explanation and len(i.explanation) > 40:
-            dup.explanation += " " + i.explanation
+        # пояснение не склеиваем: правило объясняет точнее, а склейка дублирует мысль или подмешивает чужую тему
         for r in i.req_ids:
             if r not in dup.req_ids:
                 dup.req_ids.append(r)

@@ -151,7 +151,8 @@ class LLMClient:
         chain = [m for m in chain if m in names or m.endswith("-latest")]
         skip = ("image", "tts", "audio", "live", "embed", "exp", "preview", "thinking", "8b")
         extra = [m for m in available if "flash" in m and not any(x in m for x in skip) and m not in chain]
-        extra.sort(key=lambda m: [int(x) if x.isdigit() else 0 for x in re.findall(r"\d+", m)], reverse=True)
+        # сначала полноценные Flash (точнее находят противоречия), потом облегчённые; внутри — новее раньше
+        extra.sort(key=lambda m: ("lite" in m, [-int(x) for x in re.findall(r"\d+", m)]))
         chain += extra[:4]
         log.info("Запасные модели: %s", ", ".join(chain) or "нет")
         return chain
