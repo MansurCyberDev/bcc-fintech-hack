@@ -10,7 +10,7 @@
 | RQ-03 | ТЗ §3 | Выделение отдельных требований | `src/split.py` | `test_split.py`; нарезка PDF = нарезке MD | Verified |
 | RQ-04 | ТЗ §3, §5 | Проверка каждого требования по ISO 29148 5.2.5 / IEEE 830 4.3 | `checks/rules.py`, `checks/llm_checks.py` | `test_rules.py`, `test_pipeline.py` (поддельная LLM) | Verified (правила); LLM — см. TEST_REPORT |
 | RQ-05 | ТЗ §3, §5 | Проверка набора целиком (5.2.6) | `check_set`, `check_set_llm` | те же тесты | Verified (правила); LLM — см. TEST_REPORT |
-| RQ-06 | ТЗ §4 | Обращение к LLM (Gemini бесплатно или любая) | `src/llm/client.py` | `test_llm_client.py` (повторы, ошибки ключа, JSON, OpenAI-совм.) | Verified (на поддельном сервере); реальный вызов — см. TEST_REPORT |
+| RQ-06 | ТЗ §4 | Обращение к LLM (Gemini бесплатно или любая) | `src/llm/client.py` | `test_llm_client.py` (повторы, ошибки ключа, JSON, OpenAI-совм.) | Verified (поддельный сервер + реальный вызов Gemini, см. TEST_REPORT) |
 | RQ-07 | ТЗ §6 | Отчёт на русском в файл | `src/report/` | `test_pipeline.py`, `test_cli.py` | Verified |
 | RQ-08 | ТЗ §6 | Паспорт: документ, дата, модель, версия агента (коммит) | `report/markdown.py`, `pipeline.agent_version` | тест проверяет модель и версию | Verified |
 | RQ-09 | ТЗ §6 | Таблица нарезки «ID отчёта — ID документа — формулировка», свои ID + цитата при отсутствии | `report/markdown.py` §2 | `test_pipeline.py` | Verified |
