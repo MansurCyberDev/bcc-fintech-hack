@@ -73,7 +73,8 @@ def render(report: Report) -> str:
     a("| Параметр | Значение |")
     a("| :--- | :--- |")
     rows = [
-        ("Документ", f"{doc.title} (`{doc.name}`, формат: {doc.fmt}, строк: {len(doc.lines)})"),
+        ("Документ", f"{doc.title} (`{doc.name}`, формат: {doc.fmt}, строк: {len(doc.lines)})"
+                     + ("; номера строк — по тексту, извлечённому из PDF" if doc.fmt == "pdf" else "")),
         ("Дата и время прогона", run.started_at),
         ("Модель", run.model),
         ("Версия агента", run.agent_version),

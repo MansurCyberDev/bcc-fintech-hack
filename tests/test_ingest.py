@@ -68,3 +68,20 @@ def test_errors(tmp_path, name, content, msg):
         p.write_bytes(content)
     with pytest.raises(IngestError, match=msg):
         load_document(p)
+
+
+def test_pdf_structure_is_restored(tmp_path):
+    """Заголовки и таблицы PDF восстанавливаются: нарезка PDF совпадает с исходным Markdown."""
+    from pathlib import Path
+    from src.split import split_requirements
+    root = Path(__file__).resolve().parent.parent
+    pdf = root / "examples" / "requirements.pdf"
+    if not pdf.exists():
+        pytest.skip("нет examples/requirements.pdf")
+    d_pdf = load_document(pdf)
+    d_md = load_document(root / "docs" / "requirements.md")
+    assert "#### Функциональные требования" in d_pdf.text
+    assert "| REST type | GET |" in d_pdf.text
+    ids_pdf = [r.doc_id for r in split_requirements(d_pdf) if r.doc_id.startswith("Ф-")]
+    ids_md = [r.doc_id for r in split_requirements(d_md) if r.doc_id.startswith("Ф-")]
+    assert ids_pdf == ids_md == ["Ф-1", "Ф-2", "Ф-3", "Ф-4"]

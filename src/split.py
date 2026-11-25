@@ -263,6 +263,24 @@ def split_requirements(doc: Document) -> list[Requirement]:
             b = Block("para", [title + ":", "```"] + b.lines + ["```"], start, b.end, b.section)
         merged.append(b)
 
+    # Раздел вида «200. Successful» без собственного текста: заголовок — часть требования
+    seen_sections: set[tuple] = set()
+    for b in merged:
+        key = tuple(b.section)
+        if key in seen_sections:
+            continue
+        seen_sections.add(key)
+        if b.section and re.match(r"[1-5]\d\d\b", b.section[-1]):
+            for j in range(b.start - 1, 0, -1):
+                lj = doc.lines[j - 1].strip()
+                if lj.startswith("#"):
+                    if not b.lines or not b.lines[0].startswith(b.section[-1]):
+                        b.start = j
+                        b.lines = [b.section[-1] + ":"] + b.lines
+                    break
+                if lj and j < b.start - 1:
+                    break
+
     reqs: list[Requirement] = []
     counters: dict[str, int] = {}
     for b in merged:
@@ -277,6 +295,8 @@ def split_requirements(doc: Document) -> list[Requirement]:
             text = strip_md(ID_RE.sub("", first, count=1) + " " + " ".join(l.strip() for l in b.lines[1:]))
             if kind == "context":
                 kind = "requirement"
+        elif b.num and kind == "api" and re.fullmatch(r"[1-5]\d\d", b.num):
+            doc_id = f"статус {b.num}"
         elif b.num:
             doc_id = f"п. {b.num} «{_short_section(b.section)}»"
             text = re.sub(r"^\d+[.)]\s*", "", text)

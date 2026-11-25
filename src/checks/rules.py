@@ -271,7 +271,7 @@ def check_set(doc: Document, reqs: list[Requirement]) -> list[Issue]:
             ))
 
     # 3. Дубликаты идентификаторов
-    ids = Counter(r.doc_id for r in real if r.doc_id and r.doc_id != "—" and not r.doc_id.startswith(("п.", "«", "строка")))
+    ids = Counter(r.doc_id for r in real if r.doc_id and r.doc_id != "—" and not r.doc_id.startswith(("п.", "«", "строка", "статус")))
     for did, cnt in ids.items():
         if cnt > 1:
             dups = [r for r in real if r.doc_id == did]

@@ -85,8 +85,8 @@ class Requirement:
     @property
     def location(self) -> str:
         if self.line_start == self.line_end:
-            return f"стр. {self.line_start}"
-        return f"стр. {self.line_start}–{self.line_end}"
+            return f"строка {self.line_start}"
+        return f"строки {self.line_start}–{self.line_end}"
 
 
 @dataclass

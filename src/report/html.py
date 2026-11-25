@@ -14,7 +14,7 @@ CSS = """
 --line:#2a3036;--accent:#3ccf96;--quote:#1e2522}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 -apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-main{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 64px;overflow-wrap:anywhere}
 h1{font-size:26px;line-height:1.25;margin:8px 0 16px}
 h2{font-size:20px;margin:40px 0 12px;padding-top:12px;border-top:1px solid var(--line)}
 h3{font-size:16.5px;margin:28px 0 8px}

@@ -37,7 +37,7 @@ def load_document(path: str | Path) -> Document:
         fmt = "markdown" if ext != ".txt" else "text"
     elif ext == ".pdf":
         text = _read_pdf(p)
-        fmt = "pdf"
+        fmt = "pdf"  # текст восстановлен в markdown-подобную разметку
     else:
         text = _read_docx(p)
         fmt = "docx"
@@ -63,18 +63,133 @@ def _read_text(p: Path) -> str:
 
 
 def _read_pdf(p: Path) -> str:
+    """PDF -> markdown-подобный текст: заголовки по размеру шрифта, таблицы -> | ... |.
+
+    Структура нужна нарезчику: без заголовков нельзя понять, в каком разделе требование.
+    """
     try:
         import pdfplumber
     except ImportError as e:  # pragma: no cover
         raise IngestError("Для PDF нужен пакет pdfplumber: pip install -r requirements.txt") from e
-    parts: list[str] = []
     try:
         with pdfplumber.open(str(p)) as pdf:
-            for page in pdf.pages:
-                parts.append(page.extract_text() or "")
+            if not pdf.pages:
+                return ""
+            pages = [_pdf_page_items(page) for page in pdf.pages]
+    except IngestError:
+        raise
     except Exception as e:  # битый или зашифрованный PDF
         raise IngestError(f"Не удалось прочитать PDF: {e}") from e
-    return "\n".join(parts)
+    return _pdf_to_markdown(pages)
+
+
+def _pdf_page_items(page) -> list[dict]:
+    """Строки текста (с размером шрифта) и таблицы страницы в порядке сверху вниз."""
+    items: list[dict] = []
+    try:
+        tables = page.find_tables()
+    except Exception:
+        tables = []
+    boxes = []
+    for t in tables:
+        rows = [[(c or "").replace("\n", " ").replace("|", "/").strip() for c in r] for r in (t.extract() or [])]
+        data = [r for r in rows[1:] if any(r)]
+        rows = rows[:1] + (data or rows[1:2])  # пустую таблицу (например, согласующих) сохраняем
+        if rows and max(len(r) for r in rows) >= 2:
+            boxes.append(t.bbox)
+            items.append({"top": t.bbox[1], "kind": "table", "rows": rows})
+
+    def inside(w):
+        return any(b[0] - 1 <= w["x0"] and w["x1"] <= b[2] + 1 and b[1] - 1 <= w["top"] and w["bottom"] <= b[3] + 1
+                   for b in boxes)
+
+    words = [w for w in page.extract_words(extra_attrs=["size", "fontname"], use_text_flow=True) if not inside(w)]
+    lines: list[list[dict]] = []
+    for w in sorted(words, key=lambda w: (round(w["top"]), w["x0"])):
+        if lines and abs(lines[-1][0]["top"] - w["top"]) <= 2.5:
+            lines[-1].append(w)
+        else:
+            lines.append([w])
+    for ln in lines:
+        ln.sort(key=lambda w: w["x0"])
+        text = " ".join(w["text"] for w in ln)
+        size = max(w["size"] for w in ln)
+        bold = all("bold" in (w.get("fontname") or "").lower() for w in ln)
+        items.append({"top": ln[0]["top"], "bottom": max(w["bottom"] for w in ln), "kind": "line",
+                      "text": text, "size": round(size, 1), "bold": bold, "x0": ln[0]["x0"]})
+    items.sort(key=lambda i: i["top"])
+    return items
+
+
+def _pdf_to_markdown(pages: list[list[dict]]) -> str:
+    from collections import Counter
+    sizes = Counter()
+    for items in pages:
+        for i in items:
+            if i["kind"] == "line":
+                sizes[i["size"]] += len(i["text"])
+    if not sizes:
+        body = 10.0
+    else:
+        body = sizes.most_common(1)[0][0]
+    bigger = sorted({s for s in sizes if s >= body * 1.15}, reverse=True)
+    level_of = {s: min(n + 1, 5) for n, s in enumerate(bigger)}
+    bold_level = min(len(bigger) + 1, 6)
+
+    out: list[str] = []
+    prev_bottom, prev_size = None, None
+    for items in pages:
+        prev_bottom = None
+        for it in items:
+            if it["kind"] == "table":
+                rows = it["rows"]
+                n = max(len(r) for r in rows)
+                rows = [r + [""] * (n - len(r)) for r in rows]
+                head = "| " + " | ".join(rows[0]) + " |"
+                # продолжение таблицы на следующей странице (тот же заголовок) — склеиваем
+                k = len(out) - 1
+                while k >= 0 and not out[k]:
+                    k -= 1
+                if k >= 0 and out[k].startswith("|"):
+                    j = k
+                    while j >= 0 and out[j].startswith("|"):
+                        j -= 1
+                    if out[j + 1] == head:
+                        del out[k + 1:]
+                        out.extend("| " + " | ".join(r) + " |" for r in rows[1:])
+                        out.append("")
+                        continue
+                out.append("")
+                out.append("| " + " | ".join(rows[0]) + " |")
+                out.append("|" + " --- |" * n)
+                for r in rows[1:]:
+                    out.append("| " + " | ".join(r) + " |")
+                out.append("")
+                prev_bottom = None
+                continue
+            text = it["text"].strip()
+            if not text:
+                continue
+            short = len(text) < 90 and not text.endswith((".", ",", ";", ":"))
+            if it["size"] in level_of and short:
+                out += ["", "#" * level_of[it["size"]] + " " + text, ""]
+                prev_bottom = None
+                continue
+            if it["bold"] and short and len(text.split()) <= 10:
+                out += ["", "#" * bold_level + " " + text, ""]
+                prev_bottom = None
+                continue
+            gap = (it["top"] - prev_bottom) if prev_bottom is not None else 999
+            new_unit = (gap > it["size"] * 0.9 or re.match(r"^\s*([•\-*–]|\d+[.)]|[A-Za-zА-Яа-яЁё]{1,8}[-‑–]?\d+\.)\s", text)
+                        or prev_size != it["size"])
+            if new_unit or not out or not out[-1]:
+                if out and out[-1]:
+                    out.append("")
+                out.append(re.sub(r"^•\s*", "* ", text))
+            else:
+                out[-1] = out[-1] + " " + text
+            prev_bottom, prev_size = it["bottom"], it["size"]
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(out)).strip() + "\n"
 
 
 def _read_docx(p: Path) -> str:
