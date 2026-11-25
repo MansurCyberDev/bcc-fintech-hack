@@ -158,11 +158,19 @@ function renderUpload(error) {
     } catch (e) { errBox.replaceChildren(h("div", { class: "alert alert-err", text: e.message })); }
   }
 
-  const SAMPLE_NAMES = { requirements: "ТЗ «Уведомление о расходах по карте» (задание хакатона)", cashback: "ТЗ «Кешбэк в кафе» (тестовое)" };
+  const SAMPLE_NAMES = {
+    requirements: ["Уведомление о расходах по карте", "ТЗ из задания хакатона · бизнес-часть + REST API"],
+    cashback: ["Кешбэк в кафе", "Тестовое ТЗ с заложенными дефектами"],
+  };
   app.replaceChildren(
     h("section", { class: "hero" },
       h("h1", { text: "Проверка технического задания до начала разработки" }),
-      h("p", { text: "Агент разбивает документ на требования, проверяет каждое и весь набор по ISO/IEC/IEEE 29148 и IEEE 830, находит противоречия, подтверждает каждую цитату и готовит вопросы автору. Итог — заключение о готовности к разработке и тестированию." })),
+      h("p", { text: "Агент разбивает документ на требования, проверяет каждое и весь набор по ISO/IEC/IEEE 29148 и IEEE 830, находит противоречия, подтверждает каждую цитату и готовит вопросы автору. Итог — заключение о готовности к разработке и тестированию." }),
+      h("ul", { class: "trust" },
+        h("li", { text: "ISO/IEC/IEEE 29148 · IEEE 830" }),
+        h("li", { text: "Каждая цитата сверена с документом" }),
+        h("li", { text: "Работает и без LLM — только правилами" }),
+        h("li", { text: "Без LLM документ не покидает компьютер" }))),
     h("div", { class: "upload-grid" },
       h("section", { class: "card card-pad" },
         h("h2", { text: "Документ" }),
@@ -176,8 +184,12 @@ function renderUpload(error) {
               h("span", { class: "muted small", text: "На один запрос к LLM меньше. Критик отсеивает ложные срабатывания — оставьте его включённым для сдачи." })))),
           errBox,
           h("div", { class: "row" }, go),
-          CONFIG.samples.length ? h("div", { class: "row small muted" }, "Или запустите на примере:",
-            CONFIG.samples.map((sm) => h("button", { class: "btn btn-ghost btn-sm", onclick: () => sample(sm.id) }, SAMPLE_NAMES[sm.id] || sm.name))) : null,
+          CONFIG.samples.length ? h("div", { class: "samples" }, h("div", { class: "samples-label", text: "Нет документа под рукой? Запустите на примере" }),
+            h("div", { class: "samples-grid" }, CONFIG.samples.map((sm) => {
+              const meta = SAMPLE_NAMES[sm.id] || [sm.name, ""];
+              return h("button", { class: "sample", onclick: () => sample(sm.id) },
+                h("b", { text: meta[0] }), h("span", { class: "small muted", text: meta[1] }), h("span", { class: "sample-go", "aria-hidden": "true", text: "→" }));
+            }))) : null,
           error ? h("div", { class: "alert alert-err", text: error }) : null)),
       h("aside", { class: "card card-pad" },
         h("h2", { text: "Как работает проверка" }),
@@ -323,8 +335,10 @@ function viewOverview(root) {
     h("div", { class: "card kpi kpi-quality" }, ring, h("div", {},
       h("div", { class: "k-label", text: "Индекс качества" }),
       h("div", { class: "k-sub", text: "доля требований без критичных и существенных замечаний" }))),
-    kpi("Требований", S.requirements_total, `${rs.ok} без замечаний`),
-    kpi("Дефектов", S.issues_total, `🔴 ${sev.critical} · 🟠 ${sev.major} · 🟡 ${sev.minor}`),
+    kpi("Требований", S.requirements_total, `${rs.ok} без замечаний`, `#/job/${JOB.id}/requirements`),
+    kpi("Дефектов", S.issues_total, h("span", { class: "sev-dots" },
+      h("span", { class: "d-crit", title: "критичные", text: sev.critical }), h("span", { class: "d-major", title: "существенные", text: sev.major }),
+      h("span", { class: "d-minor", title: "незначительные", text: sev.minor })), `#/job/${JOB.id}/issues`),
     kpi("Противоречий", S.contradictions, "между требованиями и частями документа", `#/job/${JOB.id}/contradictions`),
     kpi("Вопросов автору", S.questions_total, `${S.questions_blocking} блокирующих`, `#/job/${JOB.id}/questions`));
 
@@ -352,8 +366,12 @@ function viewOverview(root) {
     h("div", { class: "card-body" }, R.verdict.top_fixes.length ? h("ul", { class: "fixlist" }, R.verdict.top_fixes.map((f) => {
       const id = (f.match(/^D-\d+/) || [""])[0];
       const iss = R.issues.find((i) => i.iid === id);
-      return h("li", {}, iss ? sevBadge(iss.severity) : h("span"),
-        h("div", {}, h("a", { href: `#/job/${JOB.id}/issues/${id}`, text: id }), " ", f.replace(/^D-\d+\s*/, "")));
+      if (!iss) return h("li", {}, h("span"), h("div", { text: f }));
+      return h("li", {}, sevBadge(iss.severity, true),
+        h("div", {},
+          h("a", { class: "fix-title", href: `#/job/${JOB.id}/issues/${id}` }, h("span", { class: "issue-id", text: id }), " ", iss.title),
+          iss.req_ids.length && iss.req_ids.length <= 3 ? h("span", { class: "small faint nowrap", text: ` · ${iss.req_ids.join(", ")}` }) : null,
+          iss.suggestion ? h("div", { class: "small muted fix-how", text: iss.suggestion }) : null));
     })) : h("p", { class: "muted", text: "Критичных и существенных замечаний нет." })));
 
   const overall = R.run.overall ? h("div", { class: "card" }, h("div", { class: "card-head" }, h("h2", { text: "Оценка документа (LLM)" })),
@@ -364,7 +382,7 @@ function viewOverview(root) {
     h("b", { text: "Часть проверок LLM не выполнена. " }), `${R.run.llm_errors.length} шаг(ов): подробности во вкладке «Паспорт». Проверки правилами выполнены полностью.`));
 }
 function kpi(label, value, sub, href) {
-  const inner = [h("div", { class: "k-label", text: label }), h("div", { class: "k-value", text: value }), h("div", { class: "k-sub", text: sub })];
+  const inner = [h("div", { class: "k-label", text: label }), h("div", { class: "k-value", text: value }), h("div", { class: "k-sub" }, sub)];
   return href ? h("a", { class: "card kpi", href, style: "text-decoration:none;color:inherit" }, inner) : h("div", { class: "card kpi" }, inner);
 }
 function legend(c, t) { return h("span", {}, h("i", { style: `background:${c}` }), t); }
@@ -510,15 +528,30 @@ function viewQuestions(root) {
     const ta = h("textarea", { "aria-label": `Ответ на ${q.qid}`, placeholder: "Ответ автора (можно оставить пустым)" });
     ta.value = q.answer || "";
     areas[q.qid] = ta;
-    return h("article", { class: "card question" },
+    const card = h("article", { class: `card question${q.blocking ? " blocking" : ""}` },
       h("div", { class: "issue-head" }, h("span", { class: "issue-id", text: q.qid }), h("span", { class: "issue-title", text: q.text }),
-        q.blocking ? h("span", { class: "badge sev-critical", text: "Блокирующий" }) : null),
+        q.blocking ? h("span", { class: "badge sev-critical", text: "Блокирующий" }) : null,
+        h("span", { class: "badge sev-ok answered-mark", text: "Есть ответ" })),
       h("div", { class: "issue-meta" }, h("span", { class: "tag", text: `Кому: ${q.addressee}` }),
         ...q.issue_ids.map((id) => h("a", { class: "tag", href: `#/job/${JOB.id}/issues/${id}`, text: id }))),
       q.why ? h("p", { class: "small muted", text: q.why }) : null,
-      q.options.length ? h("div", { class: "opts-row" }, q.options.map((o) => h("button", { class: "chip", onclick: () => { ta.value = o; } }, o))) : null,
+      q.options.length ? h("div", { class: "opts-row" }, q.options.map((o) => h("button", { class: "chip", onclick: () => { ta.value = o; update(); } }, o))) : null,
       ta);
+    ta.addEventListener("input", update);
+    return card;
   });
+  const counter = h("span", { class: "small" });
+  function update() {
+    let n = 0;
+    for (const [qid, ta] of Object.entries(areas)) {
+      const has = ta.value.trim() !== "";
+      n += has;
+      ta.closest(".question")?.classList.toggle("answered", has);
+    }
+    const blk = R.questions.filter((q) => q.blocking && areas[q.qid].value.trim()).length;
+    counter.replaceChildren(h("b", { text: `Отвечено ${n} из ${R.questions.length}` }),
+      R.stats.questions_blocking ? ` · блокирующих ${blk} из ${R.stats.questions_blocking}` : "");
+  }
   const applying = JOB.status === "applying";
   const btn = h("button", { class: "btn", disabled: applying, onclick: async () => {
     btn.disabled = true; btn.textContent = "Учитываю ответы…";
@@ -539,8 +572,8 @@ function viewQuestions(root) {
   root.append(
     h("div", { class: "alert alert-info", style: "margin-bottom:14px" },
       "Ответьте на вопросы от имени автора документа — агент отметит закрытые дефекты, предложит новые формулировки и пересчитает заключение. Пустые ответы пропускаются."),
-    res, ...items, h("div", { class: "row", style: "margin-top:16px" }, btn,
-      h("span", { class: "small muted", text: `${R.stats.questions_blocking} из ${R.questions.length} — блокирующие` })));
+    res, ...items, h("div", { class: "action-bar" }, counter, h("span", { class: "spacer" }), btn));
+  update();
 }
 
 // ---- Документ
