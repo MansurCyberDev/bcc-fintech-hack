@@ -47,7 +47,8 @@ MAX_UPLOAD = 10 * 1024 * 1024
 MAX_JOBS = 50
 STATIC = Path(__file__).resolve().parent / "static"
 STATIC_TYPES = {".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8",
-                ".js": "application/javascript; charset=utf-8", ".svg": "image/svg+xml"}
+                ".js": "application/javascript; charset=utf-8", ".svg": "image/svg+xml",
+                ".woff2": "font/woff2"}
 SAMPLES = {
     "requirements": ROOT / "docs" / "requirements.md",
     "cashback": ROOT / "examples" / "eval" / "cashback.md",
