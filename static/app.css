@@ -553,3 +553,10 @@ table.t tbody tr.sel td:first-child { box-shadow: inset 3px 0 0 var(--brand); }
 /* подвал: белый, со скруглением сверху, как у bcc.kz */
 .footer { max-width: none; margin-top: 56px; background: var(--paper); border-top: 0; border-radius: 32px 32px 0 0; padding: 32px max(24px, calc(50% - 596px)) 32px; }
 .footer .note { flex-basis: 100%; color: var(--ink-3); }
+
+/* «Дополнительно»: редкие настройки проверки свёрнуты по умолчанию */
+.adv > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 10px; border-radius: var(--r-sm); font-weight: 500; color: var(--ink-2); min-height: 44px; }
+.adv > summary::-webkit-details-marker { display: none; }
+.adv > summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); margin-left: auto; transition: transform .2s var(--ease); }
+.adv[open] > summary::after { transform: rotate(225deg) translateY(-2px); }
+.adv > summary:hover { color: var(--ink); background: var(--paper); }
