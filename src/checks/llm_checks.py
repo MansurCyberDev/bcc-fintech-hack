@@ -186,6 +186,26 @@ def check_set_llm(client: LLMClient, settings: Settings, doc: Document, reqs: li
     return out, parsed.overall.strip()
 
 
+def check_conflicts_llm(client: LLMClient, settings: Settings, doc: Document, reqs: list[Requirement],
+                        known: list[Issue], errors: list[str]) -> list[Issue]:
+    """Отдельный проход «прогони сценарии»: противоречия между требованиями и пропущенные сценарии
+    (смена настройки на ходу, повтор и отмена события, границы периода). Общий метод, без привязки к документу."""
+    user = load_prompt("check_conflicts.md").format(
+        known_findings=format_findings(known),
+        requirements=format_requirements(reqs),
+        document=numbered_document(doc, settings.max_doc_chars),
+    )
+    try:
+        raw = client.generate_json(load_prompt("system.md"), user, purpose="поиск противоречий")
+        parsed = LLMSetResponse.model_validate(raw if isinstance(raw, dict) else {"issues": raw})
+    except (LLMError, ValueError, ValidationError) as e:
+        log.error("LLM: поиск противоречий: %s", e)
+        errors.append(f"Поиск противоречий: {e}")
+        return []
+    ids = {r.rid for r in reqs}
+    return [_to_issue(li, scope="set", req_ids=[r for r in li.req_ids if r in ids]) for li in parsed.issues[:6]]
+
+
 def _to_issue(li: LLMIssue, scope: str, req_ids: list[str]) -> Issue:
     return Issue(
         criterion=li.criterion,

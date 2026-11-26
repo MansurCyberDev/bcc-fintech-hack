@@ -42,6 +42,11 @@ class FakeLLM(LLMClient):
                  "explanation": "Разные единицы", "quotes": ["Лимит хранится в копейках", "от 100 до 5 000 рублей"],
                  "req_ids": ["R-02"], "question": "В чём хранить?"}],
                 "overall": "Документ сырой."})
+        if purpose == "поиск противоречий":
+            return json.dumps({"issues": [
+                {"criterion": "consistent", "severity": "major", "title": "Сброс лимита в полночь и критерий приёмки",
+                 "explanation": "Покупка около полуночи: правило сброса и критерий дают разный результат",
+                 "quotes": ["Лимит сбрасывается в полночь", "Покупка на 600 рублей"], "req_ids": ["R-02"]}]})
         if purpose == "критик":
             ids = [l.split()[1] for l in user.splitlines() if l.startswith("- L-")]
             verdicts = []
@@ -85,7 +90,10 @@ def test_full_pipeline_with_fake_llm(tmp_path):
     assert len(units) == 1 and units[0].source == "rule+llm"
     assert rep.questions[0].qid == "Q-01" and rep.questions[0].answer == "1 с"
     assert rep.resolutions and rep.resolutions[0].resolved_issue_ids == ["D-01"]
-    assert rep.run.llm_calls == len(llm.purposes) == 5
+    assert rep.run.llm_calls == len(llm.purposes) == 6
+    assert "поиск противоречий" in llm.purposes
+    conflict = [i for i in rep.issues if i.title.startswith("Сброс лимита")]
+    assert len(conflict) == 1 and conflict[0].scope == "set" and len(conflict[0].quotes) == 2
     assert rep.run.overall == "Документ сырой."
 
     paths = write_report(rep, tmp_path / "out" / "report.md")
@@ -97,7 +105,7 @@ def test_full_pipeline_with_fake_llm(tmp_path):
     assert "fake" in md and "Версия агента" in md
     assert (tmp_path / "out" / "report.html").exists()
     data = json.loads((tmp_path / "out" / "report.json").read_text(encoding="utf-8"))
-    assert data["run"]["llm_calls"] == 5
+    assert data["run"]["llm_calls"] == 6
 
 
 def test_llm_failure_degrades_gracefully(tmp_path):

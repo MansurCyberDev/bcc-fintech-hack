@@ -14,7 +14,7 @@ from typing import Callable, Optional
 
 from . import __version__
 from .checks.critic import run_critic
-from .checks.llm_checks import check_requirements_llm, check_set_llm
+from .checks.llm_checks import check_conflicts_llm, check_requirements_llm, check_set_llm
 from .checks.rules import check_requirement, check_set
 from .clarify import (apply_answers, ask_interactive, build_questions_llm, build_questions_rules,
                       load_answers)
@@ -86,6 +86,8 @@ def run(doc_path: str, settings: Settings, *, use_llm: bool = True, use_critic: 
         set_issues, overall = check_set_llm(client, settings, doc, real, rule_issues, run_info.llm_errors)
         llm_issues += set_issues
         run_info.overall = overall
+        progress("4/7 Прогоняю сценарии: ищу противоречия между требованиями")
+        llm_issues += check_conflicts_llm(client, settings, doc, real, rule_issues + llm_issues, run_info.llm_errors)
     else:
         progress("4/7 LLM не подключена — пропускаю смысловые проверки")
 
@@ -174,10 +176,15 @@ def _similar(a: Issue, b: Issue) -> bool:
         return False
     if not _lines(a) & _lines(b):
         return False
+    if b.criterion == "consistent" and len(_lines(b)) >= 2 and a.criterion != "consistent":
+        return False  # противоречие (две стороны) не растворяем в замечании другого рода, даже если цитата общая
     if a.source != b.source and _topic_overlap(a, b):
         return True  # правило и LLM про одно и то же место и одну тему
-    if a.criterion == b.criterion and (a.source != b.source or
-                                       difflib.SequenceMatcher(None, a.title.lower(), b.title.lower()).ratio() > 0.5):
+    if a.criterion == b.criterion and difflib.SequenceMatcher(None, a.title.lower(), b.title.lower()).ratio() > 0.5:
+        return True
+    # LLM дробит одну проблему на несколько замечаний (проверка требования + набора + противоречий):
+    # те же строки и минимум две общие значимые основы слов в заголовках
+    if a.source == b.source == "llm" and len(_stems(a.title) & _stems(b.title)) >= 2:
         return True
     # одна и та же проблема по HTTP/единицам часто приходит под разными критериями
     return difflib.SequenceMatcher(None, a.title.lower(), b.title.lower()).ratio() > 0.75
