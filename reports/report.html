@@ -30,8 +30,8 @@ nav a{color:var(--accent);text-decoration:none}
 </style></head>
 <body><nav><a href="#s1">Паспорт</a><a href="#s2">Нарезка</a><a href="#s3">Требования</a><a href="#s4">Набор</a><a href="#s5">Вопросы</a><a href="#s6">Сводка</a><a href="#s7">Итог</a></nav><main><h1 id="_1">Отчёт о проверке требований: «Уведомление о расходах по карте»</h1>
 <blockquote>
-<p>❌ <strong>Итог:</strong> Начинать разработку по документу нельзя: найдено 3 критичных дефекта (противоречия, непроверяемые или неполные требования, ошибки контракта). Тестирование также невозможно: тест-дизайн упрётся в противоречия и пробелы. Без замечаний — 13 из 48 требований.
-Требований: <strong>48</strong>, дефектов: <strong>35</strong> (🔴 3 · 🟠 17 · 🟡 15), уточняющих вопросов: <strong>12</strong>.</p>
+<p>❌ <strong>Итог:</strong> Начинать разработку по документу нельзя: найдено 6 критичных дефектов (противоречия, непроверяемые или неполные требования, ошибки контракта). Тестирование также невозможно: тест-дизайн упрётся в противоречия и пробелы. Без замечаний — 15 из 48 требований.
+Требований: <strong>48</strong>, дефектов: <strong>41</strong> (🔴 6 · 🟠 22 · 🟡 13), уточняющих вопросов: <strong>8</strong>.</p>
 </blockquote>
 <h2 id="1">1. Паспорт прогона</h2>
 <table>
@@ -48,39 +48,39 @@ nav a{color:var(--accent);text-decoration:none}
 </tr>
 <tr>
 <td style="text-align: left;">Дата и время прогона</td>
-<td style="text-align: left;">2026-11-25 17:18:07 +05</td>
+<td style="text-align: left;">2026-11-27 17:36:07 +05</td>
 </tr>
 <tr>
 <td style="text-align: left;">Модель</td>
-<td style="text-align: left;">gemini:gemini-flash-lite-latest</td>
+<td style="text-align: left;">gemini:gemini-3.6-flash</td>
 </tr>
 <tr>
 <td style="text-align: left;">Версия агента</td>
-<td style="text-align: left;">1.0.0 (git 4462465)</td>
+<td style="text-align: left;">1.0.0 (git 30a2deb)</td>
 </tr>
 <tr>
 <td style="text-align: left;">Режим</td>
-<td style="text-align: left;">LLM + правила + проверка цитат + критик (частично: 2 шагов LLM не выполнены)</td>
+<td style="text-align: left;">LLM + правила + проверка цитат + критик</td>
 </tr>
 <tr>
 <td style="text-align: left;">Вызовов LLM</td>
-<td style="text-align: left;">20</td>
+<td style="text-align: left;">11</td>
 </tr>
 <tr>
 <td style="text-align: left;">Длительность</td>
-<td style="text-align: left;">147.0 с</td>
+<td style="text-align: left;">737.0 с</td>
 </tr>
 <tr>
 <td style="text-align: left;">Проверка цитат</td>
-<td style="text-align: left;">все цитаты найдены в документе кодом; отброшено замечаний LLM без подтверждённой цитаты: 3</td>
+<td style="text-align: left;">все цитаты найдены в документе кодом; отброшено замечаний LLM без подтверждённой цитаты: 0</td>
 </tr>
 <tr>
 <td style="text-align: left;">Слито дублей</td>
-<td style="text-align: left;">4</td>
+<td style="text-align: left;">8</td>
 </tr>
 <tr>
 <td style="text-align: left;">Критик</td>
-<td style="text-align: left;">отклонено замечаний LLM как ложных: 0</td>
+<td style="text-align: left;">отклонено замечаний LLM как ложных: 14</td>
 </tr>
 <tr>
 <td style="text-align: left;">Стандарты</td>
@@ -88,9 +88,6 @@ nav a{color:var(--accent);text-decoration:none}
 </tr>
 </tbody>
 </table>
-<p><strong>Внимание: часть LLM-проверок не выполнена:</strong>
-- Критик: LLM недоступна после повторов: HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.
-- Уточняющие вопросы: LLM недоступна после повторов: сетевая ошибка: ReadTimeout</p>
 <h2 id="2">2. Как агент нарезал требования</h2>
 <p>Агент делит документ на разделы по заголовкам, а внутри раздела — на пункты списков, абзацы и строки таблиц. Если в документе у требования есть номер, он сохраняется; если нет — указано «—» и место в документе (номер строки).</p>
 <table>
@@ -516,26 +513,26 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟠D-07</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">🔴D-01</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-04</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟠D-08</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-05</td>
@@ -545,8 +542,8 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-04</td>
-<td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟠D-09</td>
+<td style="text-align: center;">🟠D-10</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">⚠️</td>
 </tr>
@@ -555,26 +552,26 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟡D-21</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟠D-11</td>
+<td style="text-align: center;">🟡D-29</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">❌</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-07</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-05</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-08</td>
@@ -593,8 +590,8 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: left;">R-09</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟡D-22</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟠D-12</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
@@ -610,23 +607,23 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟡D-23</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-11</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-06</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-12</td>
@@ -634,10 +631,10 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟡D-30</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-07</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">⚠️</td>
 </tr>
@@ -646,7 +643,7 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🔴D-01</td>
+<td style="text-align: center;">🔴D-03</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
@@ -671,14 +668,14 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: left;">R-15</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟡D-24</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">❌</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-16</td>
@@ -698,24 +695,24 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟡D-25</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-18</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-08</td>
+<td style="text-align: center;">🟠D-13</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🔴D-02</td>
+<td style="text-align: center;">🔴D-01</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">❌</td>
 </tr>
@@ -723,21 +720,21 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: left;">R-19</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-09</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-20</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-10</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
@@ -749,56 +746,30 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: left;">R-21</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-11</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-22</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟡D-26</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🔴D-02</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">🟡D-31</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">⚠️</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-23</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-12</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
-</tr>
-<tr>
-<td style="text-align: left;">R-24</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟡D-27</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
-</tr>
-<tr>
-<td style="text-align: left;">R-25</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
@@ -809,6 +780,32 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;">R-24</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;">R-25</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟠D-15</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">⚠️</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-26</td>
@@ -858,9 +855,9 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟠D-16</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-30</td>
@@ -918,7 +915,7 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: left;">R-34</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-13</td>
+<td style="text-align: center;">🟠D-17</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
@@ -931,14 +928,14 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: left;">R-35</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟡D-28</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-36</td>
@@ -971,25 +968,25 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟠D-18</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-39</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟡D-29</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟡D-32</td>
 <td style="text-align: center;">⚠️</td>
 </tr>
 <tr>
@@ -997,13 +994,13 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟡D-30</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-41</td>
@@ -1014,7 +1011,7 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">🟠D-14</td>
+<td style="text-align: center;">🟠D-19</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">❌</td>
 </tr>
@@ -1028,8 +1025,8 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">🟡D-33</td>
+<td style="text-align: center;">⚠️</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-43</td>
@@ -1054,21 +1051,21 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">🟡D-34</td>
+<td style="text-align: center;">⚠️</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-45</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟡D-35</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-46</td>
@@ -1079,9 +1076,9 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">🟡D-36</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️</td>
 </tr>
 <tr>
 <td style="text-align: left;">R-47</td>
@@ -1107,7 +1104,7 @@ nav a{color:var(--accent);text-decoration:none}
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️</td>
 </tr>
 </tbody>
 </table>
@@ -1117,31 +1114,59 @@ nav a{color:var(--accent);text-decoration:none}
 <p>Дать клиенту возможность узнать о достижении личного бюджета в момент покупки.</p>
 <p><em>строка 23, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Цели»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-31.</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-37.</p>
 <h3 id="r-02">R-02 ✅  — Архитектура</h3>
 <blockquote>
 <p>Мобильное приложение → сервис настроек. Карточный процессинг → учёт расходов → сервис push.</p>
 <p><em>строка 26, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Архитектура решения»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-31.</p>
-<h3 id="r-03-uiux">R-03 ✅  — UI/UX</h3>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-37.</p>
+<h3 id="r-03-uiux">R-03 ❌  — UI/UX</h3>
 <blockquote>
 <p>Карты → Расходы → Уведомления. На экране видны переключатель, поле «Порог, ₸», сумма за месяц и кнопка «Сохранить». При ошибке ввода сообщение появляется под полем.</p>
 <p><em>строка 29, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Дизайн процесса UI»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-31.</p>
-<h3 id="r-04-">R-04 ✅  — Бизнес-процесс</h3>
+<p>Связанные дефекты набора: D-37.</p>
+<h4 id="d-01-get">D-01 🔴 Метод GET для операции изменения данных</h4>
+<p><em>Критично · Корректность (ISO 29148 5.2.5 h; IEEE 830 4.3.1) · требования: R-18, R-03 · найдено: правило + LLM</em></p>
+<blockquote>
+<p>«REST type | GET» — строка 104
+«Description | Сохранение порога. Функциональные требования: чтение порога» — строка 103
+«CURL | curl -G "$BASE/alerts/saveLimit" -H "Authorization: Bearer $TOKEN" --data 'cardId=demo-42&amp;amount=50000&amp;enabled=1'» — строка 109
+«На экране видны переключатель, поле «Порог, ₸», сумма за месяц и кнопка «Сохранить».» — строка 29</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Операция меняет состояние (сохранение/замена настройки), но описана как GET. GET по RFC 9110 должен быть безопасным и идемпотентным: его кэшируют, повторяют, логируют вместе с параметрами в URL. Это ошибка проектирования и риск ИБ.</p>
+<p><strong>Как исправить.</strong> Использовать PUT (замена настройки) или POST, параметры передавать в теле JSON.</p>
+<p><strong>Вопрос автору.</strong> Метод изменяет данные или только читает их? Если изменяет — согласны ли заменить GET на POST/PUT с телом запроса?</p>
+<h4 id="d-07-ui">D-07 🟠 Отсутствуют тексты и условия ошибок UI</h4>
+<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-03 · найдено: LLM</em></p>
+<blockquote>
+<p>«При ошибке ввода сообщение появляется под полем.» — строка 29</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Требование указывает на появление сообщения при ошибке ввода, но не специфицирует конкретные тексты ошибок и правила активности кнопки «Сохранить».</p>
+<p><strong>Как исправить.</strong> Описать конкретные тексты ошибок для всех валидационных правил и состояние кнопки «Сохранить» при некорректном вводе.</p>
+<p><strong>Вопрос автору.</strong> Какой именно текст ошибки должен отображаться под полем при вводе некорректного значения суммы порога?</p>
+<h3 id="r-04-">R-04 ⚠️  — Бизнес-процесс</h3>
 <blockquote>
 <p>Проведение покупки → пересчёт расходов → проверка порога → при достижении отправка push → завершение.</p>
 <p><em>строка 34, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Требования к изменениям &gt; BPMN схема процесса»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-31.</p>
+<p>Связанные дефекты набора: D-37.</p>
+<h4 id="d-08">D-08 🟠 Отсутствие альтернативных веток в описании процесса</h4>
+<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-04 · найдено: LLM</em></p>
+<blockquote>
+<p>«Проведение покупки → пересчёт расходов → проверка порога → при достижении отправка push → завершение.» — строка 34</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> В тексте процесса описан только «успешный» сценарий превышения порога. Не указано, как завершается процесс, если порог не достигнут или если push в этом месяце уже отправлялся.</p>
+<p><strong>Как исправить.</strong> Добавить ветвление для случаев: расходы ниже порога, или push в текущем месяце уже был отправлен ранее.</p>
+<p><strong>Вопрос автору.</strong> По какому сценарию должен завершаться процесс, если после пересчета расходов порог не был достигнут?</p>
 <h3 id="r-05-1">R-05 ⚠️ Ф-1 — Функциональное</h3>
 <blockquote>
 <p>Держатель активной карты KZT задаёт целый порог от 1 000 до 1 000 000 ₸ включительно. По умолчанию уведомление выключено.</p>
 <p><em>строка 37, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Требования к изменениям &gt; Функциональные требования»</em></p>
 </blockquote>
-<h4 id="d-04-1-000-1-000-000">D-04 🟠 Нет критериев приёмки для границ диапазона от 1 000 до 1 000 000</h4>
+<p>Связанные дефекты набора: D-22.</p>
+<h4 id="d-09-1-000-1-000-000">D-09 🟠 Нет критериев приёмки для границ диапазона от 1 000 до 1 000 000</h4>
 <p><em>Существенно · Проверяемость (ISO 29148 5.2.5 g; IEEE 830 4.3.6) · требования: R-05 · найдено: правило</em></p>
 <blockquote>
 <p>«Ф-1. Держатель активной карты KZT задаёт целый порог от 1 000 до 1 000 000 ₸ включительно. По умолчанию уведомление выключено.» — строка 37</p>
@@ -1149,105 +1174,107 @@ nav a{color:var(--accent);text-decoration:none}
 <p><strong>Почему это дефект.</strong> Диапазон от 1 000 до 1 000 000 задан, но в критериях приёмки нет проверок граничных значений (1 000, 1 000 000) и значений за границами. Ошибки «на единицу» не будут пойманы приёмкой.</p>
 <p><strong>Как исправить.</strong> Добавить критерии: 999, 1000, 1000000, 1000001 — с ожидаемым результатом для каждого.</p>
 <p><strong>Вопрос автору.</strong> Что должно происходить при вводе значения вне диапазона (например, 999 или 1000001): какое сообщение увидит клиент?</p>
-<h3 id="r-06-2">R-06 ⚠️ Ф-2 — Функциональное</h3>
+<h4 id="d-10">D-10 🟠 Противоречие в протоколе сохранения настроек</h4>
+<p><em>Существенно · Корректность (ISO 29148 5.2.5 h; IEEE 830 4.3.1) · требования: R-05 · найдено: LLM</em></p>
+<blockquote>
+<p>«Держатель активной карты KZT задаёт целый порог от 1 000 до 1 000 000 ₸ включительно.» — строка 37</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Функциональное требование подразумевает сохранение настроек порога, однако в дочерней REST API спецификации метод изменения данных описан как HTTP GET (/alerts/saveLimit), что нарушает семантику HTTP и стандарты REST API.</p>
+<p><strong>Как исправить.</strong> Изменить спецификацию REST API, указав для операции сохранения метод POST или PUT с передачей параметров в теле запроса.</p>
+<p><strong>Вопрос автору.</strong> Будет ли исправлен HTTP-метод в спецификации REST API с GET на POST/PUT для изменения настроек пользователя?</p>
+<h3 id="r-06-2">R-06 ❌ Ф-2 — Функциональное</h3>
 <blockquote>
 <p>Месяц определяется по дате совершения покупки в Алматы. В расходы входят проведённые покупки. Возврат уменьшает расходы месяца исходной покупки. Переводы и снятие наличных исключаются.</p>
 <p><em>строка 38, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Требования к изменениям &gt; Функциональные требования»</em></p>
 </blockquote>
-<h4 id="d-21-4">D-21 🟡 Неатомарное требование (4 утверждений)</h4>
+<h4 id="d-02">D-02 🔴 Противоречие в расчёте месяца операции</h4>
+<p><em>Критично · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-15, R-06 · найдено: LLM</em></p>
+<blockquote>
+<p>«Покупка 31 января в 23:58 на 4 000 ₸ | Провести 1 февраля в 00:03 по Алматы | Февральский счётчик вырос на 4 000 ₸» — строка 64
+«Месяц определяется по дате совершения покупки в Алматы.» — строка 38</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Требование Ф-2 явно определяет месяц по дате совершения покупки (31 января), однако в данном критерии приёмки указано, что операция увеличивает февральский счётчик. Это приведёт к неверной реализации логики отнесения операций к расчётному периоду.</p>
+<p><strong>Как исправить.</strong> Изменить ожидаемый результат: покупка от 31 января должна увеличивать счётчик января.</p>
+<p><strong>Вопрос автору.</strong> Какая дата должна определять месяц расходов — дата совершения операции клиентом или дата её проводки процессингом?</p>
+<h4 id="d-11-push">D-11 🟠 Неопределенность логики push при возвратах</h4>
+<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-06 · найдено: LLM</em></p>
+<blockquote>
+<p>«Возврат уменьшает расходы месяца исходной покупки.» — строка 38</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Не описано поведение системы, если операция возврата уменьшает расходы текущего месяца ниже порога, а последующая покупка снова превышает этот порог в том же месяце.</p>
+<p><strong>Как исправить.</strong> Уточнить, сбрасывается ли счетчик отправленных push-уведомлений за месяц при снижении суммы расходов из-за возврата.</p>
+<p><strong>Вопрос автору.</strong> Должен ли клиент получать повторный push при новом превышении порога, если предыдущее превышение было «отменено» возвратом в этом же месяце?</p>
+<h4 id="d-29-4">D-29 🟡 Неатомарное требование (4 утверждений)</h4>
 <p><em>Незначительно · Атомарность (ISO 29148 5.2.5 e) · требования: R-06 · найдено: правило</em></p>
 <blockquote>
 <p>«Ф-2. Месяц определяется по дате совершения покупки в Алматы. В расходы входят проведённые покупки. Возврат уменьшает расходы месяца исходной покупки. Переводы и снятие наличных исключаются.» — строка 38</p>
 </blockquote>
 <p><strong>Почему это дефект.</strong> В одном пункте несколько независимых правил. Их нельзя по отдельности проследить до тестов и отметить как выполненные.</p>
 <p><strong>Как исправить.</strong> Разбить на отдельные пронумерованные требования (по одному правилу в каждом).</p>
-<h3 id="r-07-3">R-07 ⚠️ Ф-3 — Функциональное</h3>
+<h3 id="r-07-3">R-07 ✅ Ф-3 — Функциональное</h3>
 <blockquote>
 <p>Когда расходы переходят от суммы ниже порога к сумме, равной порогу или выше, клиент получает push. На карту приходится максимум один такой push за календарный месяц.</p>
 <p><em>строка 39, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Требования к изменениям &gt; Функциональные требования»</em></p>
 </blockquote>
-<h4 id="d-05">D-05 🟠 Не описано поведение при совпадении расходов с порогом ровно в момент первой настройки</h4>
-<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-07 · найдено: LLM</em></p>
-<blockquote>
-<p>«Когда расходы переходят от суммы ниже порога к сумме, равной порогу или выше, клиент получает push. На карту приходится максимум один такой push за календарный месяц.» — строка 39</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> Не указано, должен ли клиент получить push, если на момент включения уведомления и задания порога его месячные расходы уже превышают или равны этому порогу. Это приведет к неопределенности в логике сервиса и потенциальным дефектам при тестировании.</p>
-<p><strong>Как исправить.</strong> Дописать условие для ситуации, когда порог устанавливается при уже достигнутых расходах за месяц.</p>
-<p><strong>Вопрос автору.</strong> Должен ли клиент получить push сразу при сохранении настройки, если текущие расходы за месяц уже равны новому порогу или превышают его?</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-05, D-22.</p>
 <h3 id="r-08-4">R-08 ✅ Ф-4 — Функциональное</h3>
 <blockquote>
 <p>При изменении порога накопленная сумма сохраняется. Если она ниже нового порога, следующее достижение вызывает push независимо от истории предыдущей настройки.</p>
 <p><em>строка 40, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Требования к изменениям &gt; Функциональные требования»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено.</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-05, D-23.</p>
 <h3 id="r-09">R-09 ⚠️  — Взаимодействие систем</h3>
 <blockquote>
 <p>Процессинг → сервис расходов: проведена покупка. Сервис расходов → настройки: получить порог карты. Сервис расходов → push: передать последние четыре цифры карты и сумму при достижении порога.</p>
 <p><em>строка 43, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Sequence Diagram»</em></p>
 </blockquote>
-<p>Связанные дефекты набора: D-31.</p>
-<h4 id="d-22-push-">D-22 🟡 Неполное описание полей, передаваемых в push-сервис</h4>
-<p><em>Незначительно · Однозначность (ISO 29148 5.2.5 c; IEEE 830 4.3.2) · требования: R-09 · найдено: LLM</em></p>
+<p>Связанные дефекты набора: D-37.</p>
+<h4 id="d-12-sequence-diagram">D-12 🟠 Отсутствует шаг проверки активности уведомлений на Sequence Diagram</h4>
+<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-09 · найдено: LLM</em></p>
 <blockquote>
-<p>«Сервис расходов → push: передать последние четыре цифры карты и сумму при достижении порога.» — строка 43</p>
+<p>«Процессинг → сервис расходов: проведена покупка. Сервис расходов → настройки: получить порог карты. Сервис расходов → push: передать последние четыре цифры карты и сумму при достижении порога.» — строка 43</p>
 </blockquote>
-<p><strong>Почему это дефект.</strong> В тексте диаграммы указана передача только четырех цифр карты и суммы, однако для корректной отправки уведомления и локализации в мобильном приложении также необходим идентификатор карты или текст сообщения. Неоднозначность контракта взаимодействия с сервисом push.</p>
-<p><strong>Как исправить.</strong> Уточнить полный состав полей, передаваемых в сервис push (включая ID карты, валюту и текст сообщения).</p>
-<p><strong>Вопрос автору.</strong> Какие конкретно параметры (структуру данных) сервис расходов передает в сервис push помимо суммы и четырех цифр карты?</p>
-<h3 id="r-10">R-10 ⚠️  — Нефункциональное</h3>
+<p><strong>Почему это дефект.</strong> На диаграмме последовательности сервис расходов запрашивает только порог карты, но не проверяет признак включения уведомления (enabled), хотя по Ф-1 уведомление по умолчанию выключено.</p>
+<p><strong>Как исправить.</strong> Добавить на диаграмму получение признака активности уведомления (enabled) и условную проверку перед вызовом сервиса push.</p>
+<p><strong>Вопрос автору.</strong> Запрашивает ли сервис расходов у сервиса настроек признак включения уведомления (enabled) вместе со значением порога?</p>
+<h3 id="r-10">R-10 ✅  — Нефункциональное</h3>
 <blockquote>
 <p>Сервис передаёт push на отправку в течение минуты после получения события.</p>
 <p><em>строка 46, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Нефункциональные требования»</em></p>
 </blockquote>
-<p>Связанные дефекты набора: D-31.</p>
-<h4 id="d-23-push-">D-23 🟡 Не указаны условия измерения времени доставки push-уведомления</h4>
-<p><em>Незначительно · Проверяемость (ISO 29148 5.2.5 g; IEEE 830 4.3.6) · требования: R-10 · найдено: LLM</em></p>
-<blockquote>
-<p>«Сервис передаёт push на отправку в течение минуты после получения события.» — строка 46</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> Формулировка про 'одну минуту' не уточняет нагрузку, процентиль (например, 95% или 99%) и момент окончания отсчета (доставка на шлюз или на устройство), что затрудняет проверку нефункционального требования автотестами.</p>
-<p><strong>Как исправить.</strong> Зафиксировать SLA для нормальных условий эксплуатации и метрику измерения (например, 95% запросов за 60 секунд).</p>
-<p><strong>Вопрос автору.</strong> При какой максимальной интенсивности входящего потока событий из процессинга гарантируется отправка push в течение одной минуты и каков целевой перцентиль?</p>
-<h3 id="r-11">R-11 ⚠️  — Данные</h3>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-37.</p>
+<h3 id="r-11">R-11 ✅  — Данные</h3>
 <blockquote>
 <p>Хранить идентификатор карты, месяц, идентификатор операции, сумму покупки в тиынах, признак отправки и порог в тенге.</p>
 <p><em>строка 49, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Требования к данным»</em></p>
 </blockquote>
-<p>Связанные дефекты набора: D-31.</p>
-<h4 id="d-06">D-06 🟠 Отсутствует тип данных и обязательность для полей модели данных</h4>
-<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-11 · найдено: LLM</em></p>
-<blockquote>
-<p>«Хранить идентификатор карты, месяц, идентификатор операции, сумму покупки в тиынах, признак отправки и порог в тенге.» — строка 49</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> Перечислены сущности для хранения, но не указаны типы данных (кроме тиынов и тенге), длина полей и флаг обязательности (NULL/NOT NULL), что может привести к расхождениям при проектировании базы данных.</p>
-<p><strong>Как исправить.</strong> Оформить требования к данным в виде таблицы с указанием типов данных, разрядности и ограничений.</p>
-<p><strong>Вопрос автору.</strong> Каковы точные типы данных (VARCHAR, BIGINT, TIMESTAMP и т.д.) и ограничения NOT NULL для каждого из перечисляемых полей хранения?</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-37.</p>
 <h3 id="r-12">R-12 ⚠️  — Интеграция</h3>
 <blockquote>
 <p>Приложение читает и сохраняет настройки через дочерний документ «Уведомление о расходах по карте — REST API». Повторная доставка одного события процессинга сохраняет исходный итог.</p>
 <p><em>строка 52, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Требования к интеграции»</em></p>
 </blockquote>
-<p>Связанные дефекты набора: D-31.</p>
-<h4 id="d-07-http-rest-api">D-07 🟠 Противоречие HTTP-методу в дочернем документе REST API</h4>
-<p><em>Существенно · Корректность (ISO 29148 5.2.5 h; IEEE 830 4.3.1) · требования: R-12 · найдено: LLM</em></p>
+<p>Связанные дефекты набора: D-37.</p>
+<h4 id="d-30">D-30 🟡 Объединение разнородных интеграционных требований</h4>
+<p><em>Незначительно · Атомарность (ISO 29148 5.2.5 e) · требования: R-12 · найдено: LLM</em></p>
 <blockquote>
-<p>«Приложение читает и сохраняет настройки через дочерний документ «Уведомление о расходах по карте — REST API».» — строка 52</p>
+<p>«Приложение читает и сохраняет настройки через дочерний документ «Уведомление о расходах по карте — REST API». Повторная доставка одного события процессинга сохраняет исходный итог.» — строка 52</p>
 </blockquote>
-<p><strong>Почему это дефект.</strong> В Части B (строка 104) указан метод GET для сохранения настроек, что нарушает семантику REST API (методы GET должны быть безопасными и не модифицировать состояние на сервере). Требование ссылается на этот документ, создавая архитектурный дефект.</p>
-<p><strong>Как исправить.</strong> Изменить REST type в дочернем документе Части B с GET на POST или PUT для метода сохранения настроек.</p>
-<p><strong>Вопрос автору.</strong> Планируется ли исправление метода REST API с GET на POST/PUT в Части B, учитывая, что метод сохраняет и изменяет данные на сервере?</p>
+<p><strong>Почему это дефект.</strong> В одном требовании совмещены два независимых аспекта: взаимодействие мобильного приложения с REST API и гарантия идемпотентности обработки событий процессинга.</p>
+<p><strong>Как исправить.</strong> Разбить требование на два отдельных пункта: 1) Взаимодействие UI и REST API; 2) Идемпотентность обработки событий процессинга по ID операции.</p>
+<p><strong>Вопрос автору.</strong> Можно ли выделить требование к идемпотентности обработки событий процессинга в отдельный пункт спецификации?</p>
 <h3 id="r-13">R-13 ❌  — Тестирование</h3>
 <blockquote>
 <p>заполняются тестировщиками</p>
 <p><em>строка 57, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Требования к тестированию &gt; Тестирование требований»</em></p>
 </blockquote>
-<p>Связанные дефекты набора: D-31.</p>
-<h4 id="d-01">D-01 🔴 Требование не заполнено (заглушка)</h4>
-<p><em>Критично · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-13 · найдено: правило + LLM</em></p>
+<p>Связанные дефекты набора: D-37.</p>
+<h4 id="d-03">D-03 🔴 Требование не заполнено (заглушка)</h4>
+<p><em>Критично · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-13 · найдено: правило</em></p>
 <blockquote>
 <p>«заполняются тестировщиками» — строка 57</p>
 </blockquote>
-<p><strong>Почему это дефект.</strong> Вместо содержания стоит заглушка. По такому месту нельзя ни разработать, ни проверить систему. Раздел содержит заглушку вместо требований к тестированию, что делает невозможным планирование и проведение тестирования функционала.</p>
+<p><strong>Почему это дефект.</strong> Вместо содержания стоит заглушка. По такому месту нельзя ни разработать, ни проверить систему.</p>
 <p><strong>Как исправить.</strong> Заполнить раздел до передачи в разработку или явно пометить как «вне объёма».</p>
 <p><strong>Вопрос автору.</strong> Кто и когда заполнит этот раздел? Без него требование нельзя принять.</p>
 <h3 id="r-14-1">R-14 ✅ строка 1 «Критерии приемки» — Критерий приёмки</h3>
@@ -1256,57 +1283,50 @@ nav a{color:var(--accent);text-decoration:none}
 <p><em>строка 63, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Критерии приемки»</em></p>
 </blockquote>
 <p>Нарушений критериев отдельного требования не найдено.</p>
-<h3 id="r-15-2">R-15 ⚠️ строка 2 «Критерии приемки» — Критерий приёмки</h3>
+<h3 id="r-15-2">R-15 ❌ строка 2 «Критерии приемки» — Критерий приёмки</h3>
 <blockquote>
 <p>Исходные условия: Покупка 31 января в 23:58 на 4 000 ₸; Действие: Провести 1 февраля в 00:03 по Алматы; Ожидаемый результат: Февральский счётчик вырос на 4 000 ₸</p>
 <p><em>строка 64, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Критерии приемки»</em></p>
 </blockquote>
-<h4 id="d-24">D-24 🟡 Неоднозначное описание счётчика</h4>
-<p><em>Незначительно · Однозначность (ISO 29148 5.2.5 c; IEEE 830 4.3.2) · требования: R-15 · найдено: LLM</em></p>
+<h4 id="d-02_1">D-02 🔴 Противоречие в расчёте месяца операции</h4>
+<p><em>Критично · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-15, R-06 · найдено: LLM</em></p>
 <blockquote>
-<p>«Февральский счётчик вырос на 4 000 ₸» — строка 64</p>
+<p>«Покупка 31 января в 23:58 на 4 000 ₸ | Провести 1 февраля в 00:03 по Алматы | Февральский счётчик вырос на 4 000 ₸» — строка 64
+«Месяц определяется по дате совершения покупки в Алматы.» — строка 38</p>
 </blockquote>
-<p><strong>Почему это дефект.</strong> Используется сленговое выражение «февральский счётчик», точное техническое определение которого в контексте модели данных не приведено.</p>
-<p><strong>Как исправить.</strong> Заменить формулировку на более точную, ссылающуюся на накопленные расходы за месяц в соответствии с требованиями данных.</p>
-<p><strong>Вопрос автору.</strong> Что именно подразумевается под «февральским счётчиком» в терминах модели данных (поле limit_kzt, месячная агрегация расходов)?</p>
+<p><strong>Почему это дефект.</strong> Требование Ф-2 явно определяет месяц по дате совершения покупки (31 января), однако в данном критерии приёмки указано, что операция увеличивает февральский счётчик. Это приведёт к неверной реализации логики отнесения операций к расчётному периоду.</p>
+<p><strong>Как исправить.</strong> Изменить ожидаемый результат: покупка от 31 января должна увеличивать счётчик января.</p>
+<p><strong>Вопрос автору.</strong> Какая дата должна определять месяц расходов — дата совершения операции клиентом или дата её проводки процессингом?</p>
 <h3 id="r-16-3">R-16 ✅ строка 3 «Критерии приемки» — Критерий приёмки</h3>
 <blockquote>
 <p>Исходные условия: Расходы 19 900 ₸, порог 20 000 ₸; Действие: Перевести 500 ₸; Ожидаемый результат: Счётчик показывает 19 900 ₸</p>
 <p><em>строка 65, раздел «Уведомление о расходах по карте &gt; Часть A. Новый функционал &gt; Критерии приемки»</em></p>
 </blockquote>
 <p>Нарушений критериев отдельного требования не найдено.</p>
-<h3 id="r-17-api">R-17 ⚠️  — API</h3>
+<h3 id="r-17-api">R-17 ✅  — API</h3>
 <blockquote>
 <p>Дочерний документ части A: «Уведомление о расходах по карте — REST API».</p>
 <p><em>строка 97, раздел «Уведомление о расходах по карте &gt; Часть B. REST API»</em></p>
 </blockquote>
-<p>Связанные дефекты набора: D-31.</p>
-<h4 id="d-25">D-25 🟡 Ссылки на дочерний документ как такового требования</h4>
-<p><em>Незначительно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-17 · найдено: LLM</em></p>
-<blockquote>
-<p>«Дочерний документ части A: «Уведомление о расходах по карте — REST API».» — строка 97</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> Строка содержит лишь указание на наличие дочернего документа без содержательных требований к интеграции на этом уровне.</p>
-<p><strong>Как исправить.</strong> Превратить строку в полноценную ссылку или перенести описание интеграционного контракта в тело документа.</p>
-<p><strong>Вопрос автору.</strong> Требуется ли вынести эту ссылку в отдельный блок гиперссылок или оставить в виде текстового примечания?</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-37.</p>
 <h3 id="r-18-api">R-18 ❌  — API</h3>
 <blockquote>
 <p>Description: Сохранение порога. Функциональные требования: чтение порога; REST type: GET; Authorization: Bearer, сессия владельца карты; Controller: AlertsController; URL type: Dev / Prod; Request URL: Dev: /alerts/saveLimit . Prod: —; CURL: curl -G "$BASE/alerts/saveLimit" -H "Authorization: Bearer $TOKEN" --data 'cardId=demo-42&amp;amount=50000&amp;enabled=1'; Swagger: —; Gitlab project: Учебный контур; Framework: Учебный контур; Author: Школа тестирования; Developer: Команда практикума</p>
 <p><em>строки 101–114, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Общие параметры»</em></p>
 </blockquote>
-<p>Связанные дефекты набора: D-31.</p>
-<h4 id="d-02-get">D-02 🔴 Метод GET для операции изменения данных</h4>
-<p><em>Критично · Корректность (ISO 29148 5.2.5 h; IEEE 830 4.3.1) · требования: R-18, R-22 · найдено: правило + LLM</em></p>
+<p>Связанные дефекты набора: D-37.</p>
+<h4 id="d-01-get_1">D-01 🔴 Метод GET для операции изменения данных</h4>
+<p><em>Критично · Корректность (ISO 29148 5.2.5 h; IEEE 830 4.3.1) · требования: R-18, R-03 · найдено: правило + LLM</em></p>
 <blockquote>
 <p>«REST type | GET» — строка 104
 «Description | Сохранение порога. Функциональные требования: чтение порога» — строка 103
 «CURL | curl -G "$BASE/alerts/saveLimit" -H "Authorization: Bearer $TOKEN" --data 'cardId=demo-42&amp;amount=50000&amp;enabled=1'» — строка 109
-«| :--- | :--- |» — строка 102</p>
+«На экране видны переключатель, поле «Порог, ₸», сумма за месяц и кнопка «Сохранить».» — строка 29</p>
 </blockquote>
-<p><strong>Почему это дефект.</strong> Операция меняет состояние (сохранение/замена настройки), но описана как GET. GET по RFC 9110 должен быть безопасным и идемпотентным: его кэшируют, повторяют, логируют вместе с параметрами в URL. Это ошибка проектирования и риск ИБ. Метод GET по определению HTTP-семантики является безопасным и не должен изменять состояние системы (сохранять порог), что нарушает стандарты REST API. В спецификации API указано сохранение настроек через метод GET, что нарушает стандарты REST API (методы GET должны быть безопасными и идемпотентными) и противоречит логике изменения состояния системы.</p>
+<p><strong>Почему это дефект.</strong> Операция меняет состояние (сохранение/замена настройки), но описана как GET. GET по RFC 9110 должен быть безопасным и идемпотентным: его кэшируют, повторяют, логируют вместе с параметрами в URL. Это ошибка проектирования и риск ИБ.</p>
 <p><strong>Как исправить.</strong> Использовать PUT (замена настройки) или POST, параметры передавать в теле JSON.</p>
-<p><strong>Вопрос автору.</strong> Метод должен сохранять порог или читать его? Если сохранять — согласны ли заменить GET на PUT/POST с телом запроса?</p>
-<h4 id="d-08">D-08 🟠 Пустые поля в спецификации</h4>
+<p><strong>Вопрос автору.</strong> Метод изменяет данные или только читает их? Если изменяет — согласны ли заменить GET на POST/PUT с телом запроса?</p>
+<h4 id="d-13">D-13 🟠 Пустые поля в спецификации</h4>
 <p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-18 · найдено: правило</em></p>
 <blockquote>
 <p>«Request URL | Dev: /alerts/saveLimit . Prod: —» — строка 108
@@ -1315,101 +1335,69 @@ nav a{color:var(--accent);text-decoration:none}
 <p><strong>Почему это дефект.</strong> Часть обязательных полей не заполнена (стоит «—»). Нельзя понять фактическое значение для реализации/окружения.</p>
 <p><strong>Как исправить.</strong> Заполнить поля или указать «не применяется» с причиной.</p>
 <p><strong>Вопрос автору.</strong> Какие значения должны быть в пустых полях (например, адрес Prod, ссылка на Swagger)?</p>
-<h3 id="r-19-1-api">R-19 ⚠️ п. 1 «Логика работы метода» — API</h3>
+<h3 id="r-19-1-api">R-19 ✅ п. 1 «Логика работы метода» — API</h3>
 <blockquote>
 <p>Проверить пользовательскую сессию.</p>
 <p><em>строка 117, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Логика работы метода»</em></p>
 </blockquote>
-<h4 id="d-09">D-09 🟠 Размытая формулировка проверки сессии</h4>
-<p><em>Существенно · Однозначность (ISO 29148 5.2.5 c; IEEE 830 4.3.2) · требования: R-19 · найдено: LLM</em></p>
-<blockquote>
-<p>«Проверить пользовательскую сессию.» — строка 117</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> Формулировка не описывает механизм проверки (например, валидация токена JWT, обращение к сервису аутентификации) и код ответа при сбое.</p>
-<p><strong>Как исправить.</strong> Уточнить стандарт проверки сессии и указать возвращаемую ошибку при невалидном токене.</p>
-<p><strong>Вопрос автору.</strong> Какой именно механизм и какой код ответа используются при недействительной сессии пользователя?</p>
+<p>Нарушений критериев отдельного требования не найдено.</p>
 <h3 id="r-20-2-api">R-20 ⚠️ п. 2 «Логика работы метода» — API</h3>
 <blockquote>
 <p>Проверить принадлежность карты клиенту.</p>
 <p><em>строка 118, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Логика работы метода»</em></p>
 </blockquote>
-<h4 id="d-10">D-10 🟠 Не указано поведение при отсутствии прав на карту</h4>
-<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-20 · найдено: LLM</em></p>
+<h4 id="d-14-http-403">D-14 🟠 Несоответствие HTTP-кода в подразделе ошибки 403</h4>
+<p><em>Существенно · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-20 · найдено: LLM</em></p>
 <blockquote>
-<p>«Проверить принадлежность карты клиенту.» — строка 118</p>
+<p>«Для чужой карты возвращается 404, как и для отсутствующей карты.» — строка 189</p>
 </blockquote>
-<p><strong>Почему это дефект.</strong> Шаг описывает проверку принадлежности карты, но не регламентирует порядок действий и код ошибки, если карта не принадлежит клиенту (хотя в другом разделе упоминается 404/403).</p>
-<p><strong>Как исправить.</strong> Добавить отсылку на коды ответа 403/404 при прохождении этого шага.</p>
-<p><strong>Вопрос автору.</strong> Какой HTTP-статус должен возвращаться на этом шаге, если карта чужая: 403 или 404?</p>
-<h3 id="r-21-3-api">R-21 ⚠️ п. 3 «Логика работы метода» — API</h3>
+<p><strong>Почему это дефект.</strong> В подзаголовке описания статуса 403 указано, что система возвращает код 404 Not Found. Это создаёт неоднозначность в том, какой HTTP-код ответа должен возвращаться при попытке доступа к чужой карте.</p>
+<p><strong>Как исправить.</strong> Вынести обработку несуществующей/чужой карты в отдельный блок HTTP 404 или изменить код ответа для чужой карты на 403 Forbidden.</p>
+<p><strong>Вопрос автору.</strong> Какой HTTP-код ответа должен возвращаться при обращении к чужой карте — 403 Forbidden или 404 Not Found?</p>
+<h3 id="r-21-3-api">R-21 ✅ п. 3 «Логика работы метода» — API</h3>
 <blockquote>
 <p>Проверить сумму и переключатель.</p>
 <p><em>строка 119, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Логика работы метода»</em></p>
 </blockquote>
-<h4 id="d-11">D-11 🟠 Неполное описание валидации параметров</h4>
-<p><em>Существенно · Однозначность (ISO 29148 5.2.5 c; IEEE 830 4.3.2) · требования: R-21 · найдено: LLM</em></p>
-<blockquote>
-<p>«Проверить сумму и переключатель.» — строка 119</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> Формулировка «проверить сумму и переключатель» не раскрывает правила валидации (диапазоны, допустимые типы данных, обязательность).</p>
-<p><strong>Как исправить.</strong> Описать конкретные критерии валидации: диапазон суммы от 1 000 до 1 000 000 и допустимые значения переключателя (0 или 1).</p>
-<p><strong>Вопрос автору.</strong> Какие именно граничные проверки суммы и переключателя выполняются на данном шаге?</p>
-<h3 id="r-22-4-api">R-22 ❌ п. 4 «Логика работы метода» — API</h3>
+<p>Нарушений критериев отдельного требования не найдено.</p>
+<h3 id="r-22-4-api">R-22 ⚠️ п. 4 «Логика работы метода» — API</h3>
 <blockquote>
 <p>Заменить настройку и вернуть результат сохранения.</p>
 <p><em>строка 120, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Логика работы метода»</em></p>
 </blockquote>
-<h4 id="d-02-get_1">D-02 🔴 Метод GET для операции изменения данных</h4>
-<p><em>Критично · Корректность (ISO 29148 5.2.5 h; IEEE 830 4.3.1) · требования: R-18, R-22 · найдено: правило + LLM</em></p>
+<h4 id="d-31-http-200">D-31 🟡 Некорректное наименование статуса HTTP 200</h4>
+<p><em>Незначительно · Корректность (ISO 29148 5.2.5 h; IEEE 830 4.3.1) · требования: R-22 · найдено: LLM</em></p>
 <blockquote>
-<p>«REST type | GET» — строка 104
-«Description | Сохранение порога. Функциональные требования: чтение порога» — строка 103
-«CURL | curl -G "$BASE/alerts/saveLimit" -H "Authorization: Bearer $TOKEN" --data 'cardId=demo-42&amp;amount=50000&amp;enabled=1'» — строка 109
-«| :--- | :--- |» — строка 102</p>
+<p>«200. Successful — Created» — строка 165</p>
 </blockquote>
-<p><strong>Почему это дефект.</strong> Операция меняет состояние (сохранение/замена настройки), но описана как GET. GET по RFC 9110 должен быть безопасным и идемпотентным: его кэшируют, повторяют, логируют вместе с параметрами в URL. Это ошибка проектирования и риск ИБ. Метод GET по определению HTTP-семантики является безопасным и не должен изменять состояние системы (сохранять порог), что нарушает стандарты REST API. В спецификации API указано сохранение настроек через метод GET, что нарушает стандарты REST API (методы GET должны быть безопасными и идемпотентными) и противоречит логике изменения состояния системы.</p>
-<p><strong>Как исправить.</strong> Использовать PUT (замена настройки) или POST, параметры передавать в теле JSON.</p>
-<p><strong>Вопрос автору.</strong> Метод должен сохранять порог или читать его? Если сохранять — согласны ли заменить GET на PUT/POST с телом запроса?</p>
-<h4 id="d-26">D-26 🟡 Избыточность описания логики сохранения</h4>
-<p><em>Незначительно · Уместность уровня (нет лишних проектных решений) (ISO 29148 5.2.5 b) · требования: R-22 · найдено: LLM</em></p>
-<blockquote>
-<p>«Заменить настройку и вернуть результат сохранения.» — строка 120</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> Шаг содержит смесь бизнес-логики и описания технического ответа без детализации сущностей БД.</p>
-<p><strong>Как исправить.</strong> Конкретизировать, в какую таблицу/сущность сохраняются данные (например, таблицу limit_kzt).</p>
-<p><strong>Вопрос автору.</strong> В какую именно сущность или таблицу базы данных записывается измененная настройка?</p>
-<h3 id="r-23-5-api">R-23 ⚠️ п. 5 «Логика работы метода» — API</h3>
+<p><strong>Почему это дефект.</strong> Заголовок указывает код '200. Successful — Created', однако статус 'Created' относится к коду HTTP 201, а для кодов 200 используется наименование 'OK'. Несоответствие стандартным HTTP-спецификациям путает разработчиков.</p>
+<p><strong>Как исправить.</strong> Изменить название статуса на '200. Successful — OK' или изменить HTTP-код на 201.</p>
+<p><strong>Вопрос автору.</strong> Какой статус ответа должен возвращаться при успешном сохранении: 200 OK или 201 Created?</p>
+<h3 id="r-23-5-api">R-23 ✅ п. 5 «Логика работы метода» — API</h3>
 <blockquote>
 <p>При отклонении суммы вернуть прежнее состояние и результат ERROR.</p>
 <p><em>строка 121, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Логика работы метода»</em></p>
 </blockquote>
-<h4 id="d-12">D-12 🟠 Не определены условия возникновения отклонения суммы</h4>
-<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-23 · найдено: LLM</em></p>
-<blockquote>
-<p>«При отклонении суммы вернуть прежнее состояние и результат ERROR.» — строка 121</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> Не указано, при каких именно условиях сумма может быть отклонена на этапе сохранения после прохождения базовой валидации.</p>
-<p><strong>Как исправить.</strong> Описать бизнес-условия, при которых происходит откат настройки и возврат статуса ERROR.</p>
-<p><strong>Вопрос автору.</strong> В каких случаях происходит отклонение суммы на уровне базы данных или бизнес-логики сервиса?</p>
-<h3 id="r-24-1-">R-24 ⚠️ п. 1 «Особые правила» — Бизнес-правило</h3>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-06.</p>
+<h3 id="r-24-1-">R-24 ✅ п. 1 «Особые правила» — Бизнес-правило</h3>
 <blockquote>
 <p>Целое число тенге, обе границы включены.</p>
 <p><em>строка 124, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Особые правила»</em></p>
 </blockquote>
-<h4 id="d-27">D-27 🟡 Несколько условий в одном пункте</h4>
-<p><em>Незначительно · Атомарность (ISO 29148 5.2.5 e) · требования: R-24 · найдено: LLM</em></p>
-<blockquote>
-<p>«Целое число тенге, обе границы включены.» — строка 124</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> Пункт объединяет требование к целочисленности, диапазону и включению границ в одно предложение.</p>
-<p><strong>Как исправить.</strong> Разбить правило на отдельные атомарные требования: 1) Сумма должна быть целым числом. 2) Границы диапазона включительно.</p>
-<p><strong>Вопрос автору.</strong> Требуется ли разделить это правило на два отдельных подпункта для удобства трассировки в тесты?</p>
-<h3 id="r-25-2-">R-25 ✅ п. 2 «Особые правила» — Бизнес-правило</h3>
+<p>Нарушений критериев отдельного требования не найдено.</p>
+<h3 id="r-25-2-">R-25 ⚠️ п. 2 «Особые правила» — Бизнес-правило</h3>
 <blockquote>
 <p>Повторное сохранение заменяет действующую настройку.</p>
 <p><em>строка 125, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Особые правила»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено.</p>
+<h4 id="d-15-push">D-15 🟠 Не описан статус флага отправки push при перезаписи</h4>
+<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-25 · найдено: LLM</em></p>
+<blockquote>
+<p>«Повторное сохранение заменяет действующую настройку.» — строка 125</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> В требовании не указано, сбрасывается ли флаг отправки push-уведомления за текущий календарный месяц при повторном сохранении той же или новой настройки, что может вызывать повторные push-уведомления.</p>
+<p><strong>Как исправить.</strong> Указать влияние повторного сохранения настройки на статус отправки push в текущем месяце.</p>
+<p><strong>Вопрос автору.</strong> Сбрасывается ли признак отправки push за текущий месяц при повторном сохранении настройки? Варианты: 1) Сбрасывается всегда; 2) Сохраняется текущий статус; 3) Сбрасывается только при увеличении порога.</p>
 <h3 id="r-26-3-">R-26 ✅ п. 3 «Особые правила» — Бизнес-правило</h3>
 <blockquote>
 <p>Изменение порога сохраняет накопленные расходы.</p>
@@ -1421,50 +1409,57 @@ nav a{color:var(--accent);text-decoration:none}
 <p>Схема: Приложение → AlertsController → хранилище настроек → AlertsController → приложение.</p>
 <p><em>строки 128–131, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Схема»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-31.</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-37.</p>
 <h3 id="r-28-api">R-28 ✅  — API</h3>
 <blockquote>
 <p>Не используются.</p>
 <p><em>строка 136, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Параметры запроса &gt; Path-параметры»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-31.</p>
-<h3 id="r-29-cardid-query-api">R-29 ✅ «cardId» в «Query-параметры» — API</h3>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-37.</p>
+<h3 id="r-29-cardid-query-api">R-29 ⚠️ «cardId» в «Query-параметры» — API</h3>
 <blockquote>
 <p>Parameter: cardId; Format: string; Size: 1–64; Mandatory: Да; Logic: Карта клиента; Description: Идентификатор карты; DB field: card_id</p>
 <p><em>строка 142, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Параметры запроса &gt; Query-параметры»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено.</p>
+<h4 id="d-16-query-">D-16 🟠 Передача идентификатора карты в Query-параметрах</h4>
+<p><em>Существенно · Корректность (ISO 29148 5.2.5 h; IEEE 830 4.3.1) · требования: R-29 · найдено: LLM</em></p>
+<blockquote>
+<p>«| cardId | string | 1–64 | Да | Карта клиента | Идентификатор карты | card_id |» — строка 142</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Передача идентификатора карты в URL Query-параметрах приводит к открытому логированию конфиденциальных данных на веб-серверах и прокси-серверах.</p>
+<p><strong>Как исправить.</strong> Передать cardId в Path-параметрах запроса или в теле HTTP-запроса.</p>
+<p><strong>Вопрос автору.</strong> Куда следует перенести параметр cardId для предотвращения утечки через HTTP-логи? Варианты: 1) В Path-параметры; 2) В тело запроса; 3) Оставить в Query-параметрах.</p>
 <h3 id="r-30-amount-query-api">R-30 ✅ «amount» в «Query-параметры» — API</h3>
 <blockquote>
 <p>Parameter: amount; Format: integer; Size: 32 bit; Mandatory: Да; Logic: 1 000–1 000 000; Description: Порог в тенге; DB field: limit_kzt</p>
 <p><em>строка 143, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Параметры запроса &gt; Query-параметры»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-16.</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-24.</p>
 <h3 id="r-31-enabled-query-api">R-31 ✅ «enabled» в «Query-параметры» — API</h3>
 <blockquote>
 <p>Parameter: enabled; Format: integer; Size: 1 знак; Mandatory: Да; Logic: 0 или 1; Description: Признак включения; DB field: enabled</p>
 <p><em>строка 144, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Параметры запроса &gt; Query-параметры»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-17.</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-25.</p>
 <h3 id="r-32-api">R-32 ✅  — API</h3>
 <blockquote>
 <p>Content-Type: application/json .</p>
 <p><em>строка 147, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Параметры запроса &gt; Request body»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-31, D-32.</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-37, D-38.</p>
 <h3 id="r-33-api">R-33 ✅  — API</h3>
 <blockquote>
 <p>Тело не используется.</p>
 <p><em>строка 148, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Параметры запроса &gt; Request body»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-31, D-32.</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-37, D-38.</p>
 <h3 id="r-34-api">R-34 ⚠️  — API</h3>
 <blockquote>
 <p>Если результат 200 или 201 — успешный. Если результат 400, 401 и далее — неуспешный.</p>
 <p><em>строка 151, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Ответ»</em></p>
 </blockquote>
-<p>Связанные дефекты набора: D-18, D-31.</p>
-<h4 id="d-13">D-13 🟠 Размытая формулировка «и далее»</h4>
+<p>Связанные дефекты набора: D-26, D-37.</p>
+<h4 id="d-17">D-17 🟠 Размытая формулировка «и далее»</h4>
 <p><em>Существенно · Однозначность (ISO 29148 5.2.5 c; IEEE 830 4.3.2) · требования: R-34 · найдено: правило</em></p>
 <blockquote>
 <p>«Если результат 200 или 201 — успешный. Если результат 400, 401 и далее — неуспешный.» — строка 151</p>
@@ -1472,37 +1467,37 @@ nav a{color:var(--accent);text-decoration:none}
 <p><strong>Почему это дефект.</strong> Слово/оборот «и далее»: открытый перечень: неясно, какие именно значения входят. Разные читатели поймут требование по-разному.</p>
 <p><strong>Как исправить.</strong> Заменить на конкретный перечень или измеримое значение.</p>
 <p><strong>Вопрос автору.</strong> Что именно подразумевается под «и далее» в R-34? Перечислите значения явно.</p>
-<h3 id="r-35-result-api">R-35 ⚠️ «result» в «Ответ» — API</h3>
+<h3 id="r-35-result-api">R-35 ✅ «result» в «Ответ» — API</h3>
 <blockquote>
 <p>Parameter: result; Format: string; Logic: OK / ERROR; Description: Исход сохранения; DB field: —</p>
 <p><em>строка 155, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Ответ»</em></p>
 </blockquote>
-<h4 id="d-28-result">D-28 🟡 Опечатка в описании поля result</h4>
-<p><em>Незначительно · Однозначность (ISO 29148 5.2.5 c; IEEE 830 4.3.2) · требования: R-35 · найдено: LLM</em></p>
-<blockquote>
-<p>«Исход сохранения» — строка 155</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> В колонке Description указано слово «Исход», что является опечаткой и вероятнее всего означает «Исход сохранения» или «Результат».</p>
-<p><strong>Как исправить.</strong> Заменить «Исход» на «Результат» или «Статус».</p>
-<p><strong>Вопрос автору.</strong> Имелось ли в виду слово «Результат» вместо «Исход» в описании параметра result?</p>
+<p>Нарушений критериев отдельного требования не найдено.</p>
 <h3 id="r-36-amount-api">R-36 ✅ «amount» в «Ответ» — API</h3>
 <blockquote>
 <p>Parameter: amount; Format: string; Logic: При успехе; Description: Порог в тенге; DB field: limit_kzt</p>
 <p><em>строка 156, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Ответ»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-16.</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-24.</p>
 <h3 id="r-37-enabled-api">R-37 ✅ «enabled» в «Ответ» — API</h3>
 <blockquote>
 <p>Parameter: enabled; Format: string; Logic: «0» или «1»; Description: Признак включения; DB field: enabled</p>
 <p><em>строка 157, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Ответ»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-17.</p>
-<h3 id="r-38-message-api">R-38 ✅ «message» в «Ответ» — API</h3>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-25.</p>
+<h3 id="r-38-message-api">R-38 ⚠️ «message» в «Ответ» — API</h3>
 <blockquote>
 <p>Parameter: message; Format: string; Logic: При ошибке; Description: Описание ошибки; DB field: —</p>
 <p><em>строка 158, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Ответ»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено.</p>
+<h4 id="d-18">D-18 🟠 Отсутствует перечень возможных сообщений об ошибках</h4>
+<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-38 · найдено: LLM</em></p>
+<blockquote>
+<p>«| message | string | При ошибке | Описание ошибки | — |» — строка 158</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Для поля message указано логическое условие «При ошибке», но нет справочника кодов или вариантов сообщений. Это создаст сложности при тестировании и локализации ошибок в клиентском приложении.</p>
+<p><strong>Как исправить.</strong> Описать классификатор ошибок и возможные значения поля message.</p>
+<p><strong>Вопрос автору.</strong> Существует ли фиксированный список сообщений об ошибках для поля message?</p>
 <h3 id="r-39-200-api">R-39 ⚠️ статус 200 — API</h3>
 <blockquote>
 <ol start="200">
@@ -1510,29 +1505,22 @@ nav a{color:var(--accent);text-decoration:none}
 </ol>
 <p><em>строка 162, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Статусы»</em></p>
 </blockquote>
-<h4 id="d-29-200">D-29 🟡 Слишком общая формулировка описания статуса 200</h4>
-<p><em>Незначительно · Однозначность (ISO 29148 5.2.5 c; IEEE 830 4.3.2) · требования: R-39 · найдено: LLM</em></p>
+<h4 id="d-32-200">D-32 🟡 Избыточное дублирование статуса 200</h4>
+<p><em>Незначительно · Соответствие шаблону/стандарту (ISO 29148 5.2.5 i) · требования: R-39 · найдено: LLM</em></p>
 <blockquote>
 <p>«200. Ответ в случае успешного выполнения метода.» — строка 162</p>
 </blockquote>
-<p><strong>Почему это дефект.</strong> Описание статуса 200 дублирует общую информацию и не отражает специфику возврата бизнес-ошибок внутри HTTP 200, упомянутую в примерах.</p>
-<p><strong>Как исправить.</strong> Уточнить описание с учетом того, что прикладная ошибка также может возвращаться в теле при HTTP 200.</p>
-<p><strong>Вопрос автору.</strong> Стоит ли уточнить в описании статуса 200, что в теле ответа может приходить прикладная ошибка с результатом ERROR?</p>
-<h3 id="r-40-400-api">R-40 ⚠️ статус 400 — API</h3>
+<p><strong>Почему это дефект.</strong> Описание статуса 200 приведено дважды: отдельной строкой перед списком и заголовочным блоком ниже. Это нарушает единообразие структуры документа.</p>
+<p><strong>Как исправить.</strong> Удалить вводную строку и оставить описание статуса в соответствующем подразделе.</p>
+<p><strong>Вопрос автору.</strong> Можно ли убрать дублирующую строку 200 из общего списка статусов?</p>
+<h3 id="r-40-400-api">R-40 ✅ статус 400 — API</h3>
 <blockquote>
 <ol start="400">
 <li>Ответ в случае, если параметры запроса заполнены неверно.</li>
 </ol>
 <p><em>строка 163, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Статусы»</em></p>
 </blockquote>
-<h4 id="d-30-400">D-30 🟡 Отсутствуют детали валидации параметров в описании статуса 400</h4>
-<p><em>Незначительно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-40 · найдено: LLM</em></p>
-<blockquote>
-<p>«400. Ответ в случае, если параметры запроса заполнены неверно.» — строка 163</p>
-</blockquote>
-<p><strong>Почему это дефект.</strong> Описание статуса 400 является слишком общим и не указывает, какие именно параметры или условия вызывают эту ошибку.</p>
-<p><strong>Как исправить.</strong> Дополнить описание перечнем возможных нарушений валидации (например, выход суммы за пределы диапазона).</p>
-<p><strong>Вопрос автору.</strong> Какие конкретно нарушения параметров (диапазон, тип, обязательность) приводят к возврату кода 400?</p>
+<p>Нарушений критериев отдельного требования не найдено. Связанные дефекты набора: D-06.</p>
 <h3 id="r-41-200-api">R-41 ❌ статус 200 — API</h3>
 <blockquote>
 <ol start="200">
@@ -1540,8 +1528,8 @@ nav a{color:var(--accent);text-decoration:none}
 </ol>
 <p><em>строки 165–172, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Статусы &gt; 200. Successful — Created»</em></p>
 </blockquote>
-<p>Связанные дефекты набора: D-18.</p>
-<h4 id="d-03-200">D-03 🔴 Ошибка возвращается с кодом успеха 200</h4>
+<p>Связанные дефекты набора: D-06.</p>
+<h4 id="d-04-200">D-04 🔴 Ошибка возвращается с кодом успеха 200</h4>
 <p><em>Критично · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-41 · найдено: правило</em></p>
 <blockquote>
 <p>«200. Successful — Created» — строка 165
@@ -1550,7 +1538,7 @@ nav a{color:var(--accent);text-decoration:none}
 <p><strong>Почему это дефект.</strong> Под кодом 200 описаны два ответа: успешный (OK) и ошибочный (ERROR). При этом в документе сказано, что 400 — это ответ на неверные параметры. Клиент не сможет однозначно определить исход по коду.</p>
 <p><strong>Как исправить.</strong> Ошибку валидации суммы возвращать с кодом 400 (или 422) и описать её отдельно.</p>
 <p><strong>Вопрос автору.</strong> Отклонённая сумма — это 200 c result=ERROR или 400? Нужен один вариант.</p>
-<h4 id="d-14-200-created">D-14 🟠 Код 200 подписан как «Created»</h4>
+<h4 id="d-19-200-created">D-19 🟠 Код 200 подписан как «Created»</h4>
 <p><em>Существенно · Корректность (ISO 29148 5.2.5 h; IEEE 830 4.3.1) · требования: R-41 · найдено: правило</em></p>
 <blockquote>
 <p>«200. Successful — Created» — строка 165</p>
@@ -1558,14 +1546,21 @@ nav a{color:var(--accent);text-decoration:none}
 <p><strong>Почему это дефект.</strong> «Created» по HTTP — это код 201. Код 200 означает «OK». Непонятно, какой код вернёт сервис при сохранении.</p>
 <p><strong>Как исправить.</strong> Определить один код успеха: 200 OK для замены или 201 Created для создания.</p>
 <p><strong>Вопрос автору.</strong> Какой код возвращается при успешном сохранении: 200 или 201?</p>
-<h3 id="r-42-401-api">R-42 ✅ статус 401 — API</h3>
+<h3 id="r-42-401-api">R-42 ⚠️ статус 401 — API</h3>
 <blockquote>
 <ol start="401">
 <li>Ответ в случае, если запрос выполнен без необходимой авторизации.</li>
 </ol>
 <p><em>строка 174, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Статусы &gt; 200. Successful — Created»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено.</p>
+<h4 id="d-33-401">D-33 🟡 Нарушена иерархия раздела статуса 401</h4>
+<p><em>Незначительно · Соответствие шаблону/стандарту (ISO 29148 5.2.5 i) · требования: R-42 · найдено: LLM</em></p>
+<blockquote>
+<p>«401. Ответ в случае, если запрос выполнен без необходимой авторизации.» — строка 174</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Краткое описание статуса 401 ошибочно размещено внутри подраздела 200. Successful — Created, что нарушает структуру спецификации.</p>
+<p><strong>Как исправить.</strong> Перенести строку со статусом 401 из подраздела 200 в соответствующий подраздел 401.</p>
+<p><strong>Вопрос автору.</strong> Можно ли вынести описание статуса 401 из блока 200 OK?</p>
 <h3 id="r-43-403-api">R-43 ✅ статус 403 — API</h3>
 <blockquote>
 <ol start="403">
@@ -1574,30 +1569,51 @@ nav a{color:var(--accent);text-decoration:none}
 <p><em>строка 175, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Статусы &gt; 200. Successful — Created»</em></p>
 </blockquote>
 <p>Нарушений критериев отдельного требования не найдено.</p>
-<h3 id="r-44-500-api">R-44 ✅ статус 500 — API</h3>
+<h3 id="r-44-500-api">R-44 ⚠️ статус 500 — API</h3>
 <blockquote>
 <ol start="500">
 <li>Ответ в случае, если произошла внутренняя ошибка сервера.</li>
 </ol>
 <p><em>строка 176, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Статусы &gt; 200. Successful — Created»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено.</p>
-<h3 id="r-45-400-api">R-45 ✅ статус 400 — API</h3>
+<h4 id="d-34-500">D-34 🟡 Ошибка вложенности статуса 500</h4>
+<p><em>Незначительно · Соответствие шаблону/стандарту (ISO 29148 5.2.5 i) · требования: R-44 · найдено: LLM</em></p>
+<blockquote>
+<p>«500. Ответ в случае, если произошла внутренняя ошибка сервера.» — строка 176</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Описание статуса 500 размещено внутри подраздела 200. Successful — Created вместо отдельного блока.</p>
+<p><strong>Как исправить.</strong> Перенести строку в блок описания 500 статуса.</p>
+<p><strong>Вопрос автору.</strong> Перенести ли данное описание в подраздел 500. Unsuccessful — Internal server error?</p>
+<h3 id="r-45-400-api">R-45 ⚠️ статус 400 — API</h3>
 <blockquote>
 <ol start="400">
 <li>Unsuccessful — Bad request: {"message":"Некорректный запрос"}</li>
 </ol>
 <p><em>строки 178–181, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Статусы &gt; 400. Unsuccessful — Bad request»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено.</p>
-<h3 id="r-46-401-api">R-46 ✅ статус 401 — API</h3>
+<h4 id="d-35-400">D-35 🟡 Отсутствует детализация ошибок в ответе 400</h4>
+<p><em>Незначительно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-45 · найдено: LLM</em></p>
+<blockquote>
+<p>«{"message":"Некорректный запрос"}» — строка 180</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Сообщение "Некорректный запрос" слишком абстрактно и не даёт клиенту информации о том, какое именно поле не прошло валидацию.</p>
+<p><strong>Как исправить.</strong> Добавить структуру детализации ошибок с именами полей и причинами отклонения.</p>
+<p><strong>Вопрос автору.</strong> Планируется ли передавать в ответе 400 названия конкретных некорректных полей?</p>
+<h3 id="r-46-401-api">R-46 ⚠️ статус 401 — API</h3>
 <blockquote>
 <ol start="401">
 <li>Unsuccessful — Unauthorized: {"message":"Требуется вход"}</li>
 </ol>
 <p><em>строки 183–186, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Статусы &gt; 401. Unsuccessful — Unauthorized»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено.</p>
+<h4 id="d-36-www-authenticate-401">D-36 🟡 Отсутствует заголовок WWW-Authenticate для 401</h4>
+<p><em>Незначительно · Корректность (ISO 29148 5.2.5 h; IEEE 830 4.3.1) · требования: R-46 · найдено: LLM</em></p>
+<blockquote>
+<p>«401. Unsuccessful — Unauthorized» — строка 183</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Согласно RFC 9110, ответ со статусом 401 Unauthorized обязано содержать HTTP-заголовок WWW-Authenticate, который не описан в спецификации.</p>
+<p><strong>Как исправить.</strong> Добавить обязательный HTTP-заголовок WWW-Authenticate в описание ответа 401.</p>
+<p><strong>Вопрос автору.</strong> Какой схемы аутентификации заголовок WWW-Authenticate будет возвращаться при 401?</p>
 <h3 id="r-47-403-api">R-47 ⚠️ статус 403 — API</h3>
 <blockquote>
 <ol start="403">
@@ -1605,8 +1621,8 @@ nav a{color:var(--accent);text-decoration:none}
 </ol>
 <p><em>строки 188–193, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Статусы &gt; 403. Unsuccessful — Forbidden»</em></p>
 </blockquote>
-<p>Связанные дефекты набора: D-18.</p>
-<h4 id="d-15-403-404">D-15 🟠 Раздел статуса 403 описывает ответ 404</h4>
+<p>Связанные дефекты набора: D-26.</p>
+<h4 id="d-20-403-404">D-20 🟠 Раздел статуса 403 описывает ответ 404</h4>
 <p><em>Существенно · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-47 · найдено: правило</em></p>
 <blockquote>
 <p>«Для чужой карты возвращается 404, как и для отсутствующей карты.» — строка 189</p>
@@ -1614,14 +1630,21 @@ nav a{color:var(--accent);text-decoration:none}
 <p><strong>Почему это дефект.</strong> Раздел назван «403. Unsuccessful — Forbidden», но внутри сказано, что возвращается 404. Непонятно, будет ли вообще использоваться код 403.</p>
 <p><strong>Как исправить.</strong> Либо убрать статус 403 из перечня, либо описать, когда он возвращается.</p>
 <p><strong>Вопрос автору.</strong> Возвращает ли метод когда-нибудь 403? Если нет — удалить его из списка статусов?</p>
-<h3 id="r-48-500-api">R-48 ✅ статус 500 — API</h3>
+<h3 id="r-48-500-api">R-48 ⚠️ статус 500 — API</h3>
 <blockquote>
 <ol start="500">
 <li>Unsuccessful — Internal server error: {"message":"Ошибка сервиса"}</li>
 </ol>
 <p><em>строки 195–198, раздел «Уведомление о расходах по карте &gt; Часть B. REST API &gt; Статусы &gt; 500. Unsuccessful — Internal server error»</em></p>
 </blockquote>
-<p>Нарушений критериев отдельного требования не найдено.</p>
+<h4 id="d-21-500">D-21 🟠 Несогласованность структуры ответа 500 с общей таблицей</h4>
+<p><em>Существенно · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-48 · найдено: LLM</em></p>
+<blockquote>
+<p>«{"message":"Ошибка сервиса"}» — строка 197</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> В примере ответа 500 возвращается объект с полем message, но отсутствует поле result, зафиксированное в таблице «Ответ».</p>
+<p><strong>Как исправить.</strong> Привести структуру ответа 500 к общей схеме либо выделить стандартную схему системных ошибок.</p>
+<p><strong>Вопрос автору.</strong> Должно ли тело ответа 500 включать поле result: ERROR согласно общей таблице ответов?</p>
 <h2 id="4">4. Проверка всего набора требований</h2>
 <table>
 <thead>
@@ -1635,12 +1658,12 @@ nav a{color:var(--accent);text-decoration:none}
 <tr>
 <td style="text-align: left;">Полнота набора</td>
 <td style="text-align: left;">ISO 29148 5.2.6 a; IEEE 830 4.3.3</td>
-<td style="text-align: left;">✓ нарушений не найдено</td>
+<td style="text-align: left;">⚠️ D-22, D-23</td>
 </tr>
 <tr>
 <td style="text-align: left;">Непротиворечивость</td>
 <td style="text-align: left;">ISO 29148 5.2.6 b; IEEE 830 4.3.4</td>
-<td style="text-align: left;">⚠️ D-16, D-17, D-19, D-32</td>
+<td style="text-align: left;">❌ D-05, D-06, D-24, D-25, D-27, D-38</td>
 </tr>
 <tr>
 <td style="text-align: left;">Реализуемость набора</td>
@@ -1655,33 +1678,68 @@ nav a{color:var(--accent);text-decoration:none}
 <tr>
 <td style="text-align: left;">Возможность валидации</td>
 <td style="text-align: left;">ISO 29148 5.2.6 e</td>
-<td style="text-align: left;">⚠️ D-34, D-35</td>
+<td style="text-align: left;">⚠️ D-40, D-41</td>
 </tr>
 <tr>
 <td style="text-align: left;">Ранжирование по важности/стабильности</td>
 <td style="text-align: left;">IEEE 830 4.3.5</td>
-<td style="text-align: left;">⚠️ D-33</td>
+<td style="text-align: left;">⚠️ D-39</td>
 </tr>
 <tr>
 <td style="text-align: left;">Модифицируемость (версия, структура)</td>
 <td style="text-align: left;">IEEE 830 4.3.7</td>
-<td style="text-align: left;">⚠️ D-20</td>
+<td style="text-align: left;">⚠️ D-28</td>
 </tr>
 <tr>
 <td style="text-align: left;">Трассируемость</td>
 <td style="text-align: left;">IEEE 830 4.3.8</td>
-<td style="text-align: left;">⚠️ D-31</td>
+<td style="text-align: left;">⚠️ D-37</td>
 </tr>
 <tr>
 <td style="text-align: left;">Прочие свойства</td>
 <td style="text-align: left;">—</td>
-<td style="text-align: left;">D-18</td>
+<td style="text-align: left;">D-26</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Общая оценка (LLM):</strong> Документ содержит критические архитектурные и стилистические несоответствия, особенно в части проектирования REST API (использование GET для изменения данных, путаница с типами данных и кодами ответов). Требуется доработка спецификации интерфейса и унификация требований перед передачей в разработку.</p>
-<h3 id="d-16-amount-integer-string">D-16 🟠 Параметр amount имеет разные типы: integer, string</h3>
-<p><em>Существенно · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-30, R-36 · найдено: правило</em></p>
+<p><strong>Общая оценка (LLM):</strong> Документ содержит критические противоречия между бизнес-правилами и критериями приёмки, а также неоднозначности в обработке HTTP-ошибок. Кроме того, набор требований неполный: отсутствуют спецификации REST API для чтения текущего порога и суммы расходов за месяц.</p>
+<h3 id="d-05-push-">D-05 🔴 Противоречие в лимите push-уведомлений при смене порога</h3>
+<p><em>Критично · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-07, R-08 · найдено: LLM</em></p>
+<blockquote>
+<p>«На карту приходится максимум один такой push за календарный месяц.» — строка 39
+«Если она ниже нового порога, следующее достижение вызывает push независимо от истории предыдущей настройки.» — строка 40</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Требование R-07 (Ф-3) жестко ограничивает количество уведомлений: «На карту приходится максимум один такой push за календарный месяц». В то же время R-08 (Ф-4) требует, чтобы при изменении порога новое достижение вызывало push «независимо от истории предыдущей настройки». В сценарии, когда клиент уже получил push в текущем месяце, а затем установил более высокий порог и превысил его, R-07 запрещает отправку push, а R-08 требует его отправить.</p>
+<p><strong>Как исправить.</strong> Уточнить R-07 и R-08: либо указать, что изменение порога сбрасывает месячный лимит отправленных push, либо зафиксировать, что ограничение «не более 1 push в календарный месяц» является абсолютным.</p>
+<p><strong>Вопрос автору.</strong> Допускается ли отправка второго push-уведомления в течение одного месяца, если клиент изменил порог и превысил его заново?</p>
+<h3 id="d-06-http-">D-06 🔴 Противоречие в HTTP-статусе ответа при ошибке валидации суммы</h3>
+<p><em>Критично · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-23, R-40, R-41 · найдено: LLM</em></p>
+<blockquote>
+<p>«При отклонении суммы вернуть прежнее состояние и результат ERROR.» — строка 121
+«400. Ответ в случае, если параметры запроса заполнены неверно.» — строка 163</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Требование R-40 предписывает возвращать HTTP 400, если параметры запроса заполнены неверно. В то же время бизнес-логика (R-23) и пример ответа 200 (R-41) указывают, что при невалидной сумме возвращается HTTP 200 с полем result: ERROR. Это создает противоречие в спецификации API: разработчики и тестировщики не будут знать, ожидать ли HTTP 400 Bad Request или HTTP 200 OK при ошибке ввода суммы.</p>
+<p><strong>Как исправить.</strong> Привести спецификацию API к единому стандарту: возвращать HTTP 400 Bad Request при ошибках валидации параметров запроса и исключить бизнес-ошибки из ответа со статусом HTTP 200.</p>
+<p><strong>Вопрос автору.</strong> Какой HTTP-статус должен возвращать сервис при некорректно указанной сумме: 400 Bad Request или 200 OK с полем result: ERROR в теле ответа?</p>
+<h3 id="d-22-enabled-push">D-22 🟠 Не описано влияние отключенного флага enabled на отправку push</h3>
+<p><em>Существенно · Полнота набора (ISO 29148 5.2.6 a; IEEE 830 4.3.3) · требования: R-05, R-07 · найдено: LLM</em></p>
+<blockquote>
+<p>«По умолчанию уведомление выключено.» — строка 37
+«Когда расходы переходят от суммы ниже порога к сумме, равной порогу или выше, клиент получает push.» — строка 39</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> Требование Ф-1 (R-05) фиксирует, что по умолчанию уведомления выключены, а спецификация API содержит параметр enabled (R-31). При этом в логике проверки порога (R-07) и схемах процесса (R-04, R-09) отсутствует условие проверки состояния флага enabled перед отправкой push-уведомления.</p>
+<p><strong>Как исправить.</strong> Дополнить требование Ф-3 (R-07) условием: push-уведомление отправляется только в том случае, если флаг уведомлений включен (enabled = 1).</p>
+<p><strong>Вопрос автору.</strong> Должна ли система блокировать отправку push-уведомления при превышении порога, если признак уведомлений выключен (enabled = 0)?</p>
+<h3 id="d-23">D-23 🟠 Не описано поведение при пороге ниже или равном текущим расходам</h3>
+<p><em>Существенно · Полнота набора (ISO 29148 5.2.6 a; IEEE 830 4.3.3) · требования: R-08 · найдено: LLM</em></p>
+<blockquote>
+<p>«При изменении порога накопленная сумма сохраняется. Если она ниже нового порога, следующее достижение вызывает push независимо от истории предыдущей настройки.» — строка 40</p>
+</blockquote>
+<p><strong>Почему это дефект.</strong> В R-08 (Ф-4) регламентирован только сценарий, когда накопленная сумма «ниже нового порога». Сценарий, когда клиент устанавливает или снижает порог до уровня, который равен или меньше уже накопленных расходов в текущем месяце (например, накоплено 50 000 ₸, а новый порог задан 40 000 ₸), в требованиях отсутствует. Не определено, отправляется ли push моментально при сохранении настройки, при совершении следующей покупки или не отправляется вовсе.</p>
+<p><strong>Как исправить.</strong> Дополнить R-08 описанием поведения системы в случае, если сохранённый порог меньше или равен уже накопленным расходам за текущий месяц.</p>
+<p><strong>Вопрос автору.</strong> Должен ли отправляться push-уведомление при сохранении настройки, если новый порог задан ниже уже накопленной суммы расходов?</p>
+<h3 id="d-24-amount-integer-string">D-24 🟠 Параметр amount имеет разные типы: integer, string</h3>
+<p><em>Существенно · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-30, R-36 · найдено: правило + LLM</em></p>
 <blockquote>
 <p>«amount | integer | 32 bit | Да | 1 000–1 000 000 | Порог в тенге | limit_kzt» — строка 143
 «amount | string | При успехе | Порог в тенге | limit_kzt» — строка 156</p>
@@ -1689,8 +1747,8 @@ nav a{color:var(--accent);text-decoration:none}
 <p><strong>Почему это дефект.</strong> Поле «amount» описано с разными форматами в разных таблицах (например, в запросе и в ответе). Клиент и сервер по-разному сериализуют значение.</p>
 <p><strong>Как исправить.</strong> Использовать один тип для поля во всех местах (например, integer для суммы, boolean для признака).</p>
 <p><strong>Вопрос автору.</strong> Какой тип у поля «amount»: integer или string?</p>
-<h3 id="d-17-enabled-integer-string">D-17 🟠 Параметр enabled имеет разные типы: integer, string</h3>
-<p><em>Существенно · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-31, R-37 · найдено: правило</em></p>
+<h3 id="d-25-enabled-integer-string">D-25 🟠 Параметр enabled имеет разные типы: integer, string</h3>
+<p><em>Существенно · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-31, R-37 · найдено: правило + LLM</em></p>
 <blockquote>
 <p>«enabled | integer | 1 знак | Да | 0 или 1 | Признак включения | enabled» — строка 144
 «enabled | string | «0» или «1» | Признак включения | enabled» — строка 157</p>
@@ -1698,25 +1756,25 @@ nav a{color:var(--accent);text-decoration:none}
 <p><strong>Почему это дефект.</strong> Поле «enabled» описано с разными форматами в разных таблицах (например, в запросе и в ответе). Клиент и сервер по-разному сериализуют значение.</p>
 <p><strong>Как исправить.</strong> Использовать один тип для поля во всех местах (например, integer для суммы, boolean для признака).</p>
 <p><strong>Вопрос автору.</strong> Какой тип у поля «enabled»: integer или string?</p>
-<h3 id="d-18-201-404">D-18 🟠 Коды ответа 201, 404 упоминаются, но не описаны</h3>
-<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-34, R-47, R-41 · найдено: правило + LLM</em></p>
+<h3 id="d-26-201-404">D-26 🟠 Коды ответа 201, 404 упоминаются, но не описаны</h3>
+<p><em>Существенно · Полнота (ISO 29148 5.2.5 d; IEEE 830 4.3.3) · требования: R-34, R-47 · найдено: правило + LLM</em></p>
 <blockquote>
 <p>«Если результат 200 или 201 — успешный. Если результат 400, 401 и далее — неуспешный.» — строка 151
 «Для чужой карты возвращается 404, как и для отсутствующей карты.» — строка 189</p>
 </blockquote>
-<p><strong>Почему это дефект.</strong> В перечне статусов метода эти коды отсутствуют, хотя в тексте они встречаются. Неясно, когда именно сервис их возвращает и какое у ответа тело. В описании ответа упоминается код 201, однако для метода сохранения используется GET, а в разделе статусов успешным ответом указан только код 200.</p>
+<p><strong>Почему это дефект.</strong> В перечне статусов метода эти коды отсутствуют, хотя в тексте они встречаются. Неясно, когда именно сервис их возвращает и какое у ответа тело.</p>
 <p><strong>Как исправить.</strong> Перечислить ровно те коды, которые возвращает метод, с условием и примером тела для каждого.</p>
 <p><strong>Вопрос автору.</strong> Возвращает ли метод коды 201, 404? Если да — в каких случаях?</p>
-<h3 id="d-19">D-19 🟠 Суммы хранятся в разных единицах (тиынах и тенге)</h3>
+<h3 id="d-27">D-27 🟠 Суммы хранятся в разных единицах (тиынах и тенге)</h3>
 <p><em>Существенно · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · найдено: правило</em></p>
 <blockquote>
 <p>«Хранить идентификатор карты, месяц, идентификатор операции, сумму покупки в тиынах, признак отправки и порог в тенге.» — строка 49
 «Карты → Расходы → Уведомления. На экране видны переключатель, поле «Порог, ₸», сумма за месяц и кнопка «Сохранить». При ошибке ввода сообщение появляется под полем.» — строка 29</p>
 </blockquote>
-<p><strong>Почему это дефект.</strong> В документе суммы указаны и в тиынах, и в тенге. Не описано, где и как выполняется пересчёт и округление. Сравнение суммы с порогом может дать ошибку в 100 раз.</p>
+<p><strong>Почему это дефект.</strong> В документе суммы указаны и в тиынах, и в тенге. Не описано, где и как выполняется пересчёт и округление. Сравнение сумм в разных единицах может дать ошибку в 100 раз.</p>
 <p><strong>Как исправить.</strong> Хранить все суммы в одной единице (минимальной) или явно описать правило пересчёта.</p>
-<p><strong>Вопрос автору.</strong> В каких единицах сравнивать расходы с порогом: в тиынах или в тенге? Где выполняется пересчёт?</p>
-<h3 id="d-20">D-20 🟠 Нет версии и даты документа</h3>
+<p><strong>Вопрос автору.</strong> В каких единицах хранить и сравнивать суммы: в тиынах или в тенге? Где выполняется пересчёт?</p>
+<h3 id="d-28">D-28 🟠 Нет версии и даты документа</h3>
 <p><em>Существенно · Модифицируемость (версия, структура) (IEEE 830 4.3.7) · найдено: правило</em></p>
 <blockquote>
 <p>«Документ (версия/дата) в источнике не заполнен. Пункты чек-листа приведены как в шаблоне, отметки не проставлены.» — строка 68</p>
@@ -1724,7 +1782,7 @@ nav a{color:var(--accent);text-decoration:none}
 <p><strong>Почему это дефект.</strong> Документ не версионирован. Нельзя понять, какую редакцию проверяли, и отследить изменения (IEEE 830 4.3.7).</p>
 <p><strong>Как исправить.</strong> Добавить номер версии, дату и историю изменений.</p>
 <p><strong>Вопрос автору.</strong> Какая это версия документа и от какой даты? Кто владелец изменений?</p>
-<h3 id="d-31-16-48">D-31 🟡 16 из 48 требований без идентификатора</h3>
+<h3 id="d-37-16-48">D-37 🟡 16 из 48 требований без идентификатора</h3>
 <p><em>Незначительно · Трассируемость (IEEE 830 4.3.8) · требования: R-01, R-02, R-03, R-04, R-09, R-10, R-11, R-12, R-13, R-17, R-18, R-27, R-28, R-32, R-33, R-34 · найдено: правило</em></p>
 <blockquote>
 <p>«Дать клиенту возможность узнать о достижении личного бюджета в момент покупки.» — строка 23
@@ -1733,7 +1791,7 @@ nav a{color:var(--accent);text-decoration:none}
 </blockquote>
 <p><strong>Почему это дефект.</strong> Нефункциональные требования, требования к данным, интеграции и т.п. не пронумерованы. На них нельзя сослаться из тестов и задач.</p>
 <p><strong>Как исправить.</strong> Присвоить идентификаторы всем требованиям (например, НФ-1, Д-1, И-1).</p>
-<h3 id="d-32-content-type">D-32 🟡 Указан Content-Type, но тело запроса не используется</h3>
+<h3 id="d-38-content-type">D-38 🟡 Указан Content-Type, но тело запроса не используется</h3>
 <p><em>Незначительно · Непротиворечивость (ISO 29148 5.2.6 b; IEEE 830 4.3.4) · требования: R-32, R-33 · найдено: правило</em></p>
 <blockquote>
 <p>«Content-Type: application/json .» — строка 147
@@ -1741,21 +1799,21 @@ nav a{color:var(--accent);text-decoration:none}
 </blockquote>
 <p><strong>Почему это дефект.</strong> Тип содержимого тела задан, хотя тела нет. Это признак того, что контракт запроса не доработан.</p>
 <p><strong>Как исправить.</strong> Либо перенести параметры в JSON-тело, либо убрать Content-Type.</p>
-<h3 id="d-33">D-33 🟡 Требования не ранжированы по важности</h3>
+<h3 id="d-39">D-39 🟡 Требования не ранжированы по важности</h3>
 <p><em>Незначительно · Ранжирование по важности/стабильности (IEEE 830 4.3.5) · найдено: правило</em></p>
 <blockquote>
 <p>«Дать клиенту возможность узнать о достижении личного бюджета в момент покупки.» — строка 23</p>
 </blockquote>
 <p><strong>Почему это дефект.</strong> Не указан приоритет требований. При нехватке времени неясно, что делать в первую очередь (IEEE 830 4.3.5).</p>
 <p><strong>Как исправить.</strong> Добавить приоритет (MoSCoW или высокий/средний/низкий) к каждому требованию.</p>
-<h3 id="d-34-14">D-34 🟡 Чек-лист ревью не заполнен (14 пунктов «Да / Нет»)</h3>
+<h3 id="d-40-14">D-40 🟡 Чек-лист ревью не заполнен (14 пунктов «Да / Нет»)</h3>
 <p><em>Незначительно · Возможность валидации (ISO 29148 5.2.6 e) · найдено: правило</em></p>
 <blockquote>
 <p>«Техническое требование зафиксировано и покрывает бизнес-требование | Да / Нет | Да / Нет» — строка 72</p>
 </blockquote>
 <p><strong>Почему это дефект.</strong> Пункты чек-листа оставлены как в шаблоне. Документ формально не прошёл ревью.</p>
 <p><strong>Как исправить.</strong> Пройти чек-лист и проставить отметки.</p>
-<h3 id="d-35">D-35 🟡 Пустая таблица согласования/заполнения</h3>
+<h3 id="d-41">D-41 🟡 Пустая таблица согласования/заполнения</h3>
 <p><em>Незначительно · Возможность валидации (ISO 29148 5.2.6 e) · найдено: правило</em></p>
 <blockquote>
 <p>«Блок согласующих» — строка 87</p>
@@ -1765,42 +1823,70 @@ nav a{color:var(--accent);text-decoration:none}
 <p><strong>Вопрос автору.</strong> Кто должен согласовать документ (бизнес, архитектура, ИБ) и когда?</p>
 <h2 id="5">5. Уточняющие вопросы автору документа</h2>
 <p>Без ответов на блокирующие вопросы (🚫) нельзя однозначно реализовать и протестировать требования.</p>
-<p><strong>Q-01. 🚫 Кто и когда заполнит этот раздел? Без него требование нельзя принять.</strong></p>
-<p><em>Кому: Аналитик · дефекты: D-01 · требования: R-13</em></p>
-<p>Зачем: Требование не заполнено (заглушка): без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-02. 🚫 Метод должен сохранять порог или читать его? Если сохранять — согласны ли заменить GET на PUT/POST с телом запроса?</strong></p>
-<p><em>Кому: Разработчик API · дефекты: D-02 · требования: R-18, R-22</em></p>
-<p>Зачем: Метод GET для операции изменения данных: без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-03. 🚫 Отклонённая сумма — это 200 c result=ERROR или 400? Нужен один вариант.</strong></p>
-<p><em>Кому: Аналитик · дефекты: D-03 · требования: R-41</em></p>
-<p>Зачем: Ошибка возвращается с кодом успеха 200: без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-04. Что должно происходить при вводе значения вне диапазона (например, 999 или 1000001): какое сообщение увидит клиент?</strong></p>
-<p><em>Кому: Тестировщик · дефекты: D-04 · требования: R-05</em></p>
-<p>Зачем: Нет критериев приёмки для границ диапазона от 1 000 до 1 000 000: без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-05. Должен ли клиент получить push сразу при сохранении настройки, если текущие расходы за месяц уже равны новому порогу или превышают его?</strong></p>
-<p><em>Кому: Аналитик · дефекты: D-05 · требования: R-07</em></p>
-<p>Зачем: Не описано поведение при совпадении расходов с порогом ровно в момент первой настройки: без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-06. Каковы точные типы данных (VARCHAR, BIGINT, TIMESTAMP и т.д.) и ограничения NOT NULL для каждого из перечисляемых полей хранения?</strong></p>
-<p><em>Кому: Аналитик · дефекты: D-06 · требования: R-11</em></p>
-<p>Зачем: Отсутствует тип данных и обязательность для полей модели данных: без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-07. Планируется ли исправление метода REST API с GET на POST/PUT в Части B, учитывая, что метод сохраняет и изменяет данные на сервере?</strong></p>
-<p><em>Кому: Разработчик API · дефекты: D-07 · требования: R-12</em></p>
-<p>Зачем: Противоречие HTTP-методу в дочернем документе REST API: без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-08. Какие значения должны быть в пустых полях (например, адрес Prod, ссылка на Swagger)?</strong></p>
-<p><em>Кому: Аналитик · дефекты: D-08 · требования: R-18</em></p>
-<p>Зачем: Пустые поля в спецификации: без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-09. Какой именно механизм и какой код ответа используются при недействительной сессии пользователя?</strong></p>
-<p><em>Кому: Аналитик · дефекты: D-09 · требования: R-19</em></p>
-<p>Зачем: Размытая формулировка проверки сессии: без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-10. Какой HTTP-статус должен возвращаться на этом шаге, если карта чужая: 403 или 404?</strong></p>
-<p><em>Кому: Аналитик · дефекты: D-10 · требования: R-20</em></p>
-<p>Зачем: Не указано поведение при отсутствии прав на карту: без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-11. Какие именно граничные проверки суммы и переключателя выполняются на данном шаге?</strong></p>
-<p><em>Кому: Аналитик · дефекты: D-11 · требования: R-21</em></p>
-<p>Зачем: Неполное описание валидации параметров: без ответа требование нельзя однозначно реализовать.</p>
-<p><strong>Q-12. В каких случаях происходит отклонение суммы на уровне базы данных или бизнес-логики сервиса?</strong></p>
-<p><em>Кому: Аналитик · дефекты: D-12 · требования: R-23</em></p>
-<p>Зачем: Не определены условия возникновения отклонения суммы: без ответа требование нельзя однозначно реализовать.</p>
+<p><strong>Q-01. 🚫 Какой HTTP-метод и формат передачи параметров должны использоваться для изменения и сохранения настроек порога?</strong></p>
+<p><em>Кому: Архитектор · дефекты: D-01, D-10, D-16, D-38 · требования: R-18, R-03, R-05, R-29, R-32, R-33</em></p>
+<p>Зачем: Использование метода GET для мутирующих операций нарушает REST-архитектуру и создаёт риск утечки cardId через HTTP-логи.</p>
+<ol>
+<li>Изменить метод на POST/PUT с передачей параметров в теле запроса (JSON)</li>
+<li>Использовать PUT с передачей cardId в path-параметре (/alerts/cards/{cardId}/limit)</li>
+<li>Оставить метод GET и передачу параметров в Query</li>
+</ol>
+<p><strong>Q-02. 🚫 Каковы единые стандарты HTTP-кодов ответа и формата тела ошибки для всех REST API методов?</strong></p>
+<p><em>Кому: Разработчик API · дефекты: D-04, D-06, D-14, D-17, D-19, D-20, D-21, D-26, D-31, D-32, D-33, D-34, D-35, D-36 · требования: R-41, R-23, R-40, R-20, R-34, R-47, R-48, R-22, R-39, R-42, R-44, R-45, R-46</em></p>
+<p>Зачем: Противоречия в кодах ответов (200 с result: ERROR vs 400/404/403) приведут к некорректной обработке ошибок на стороне клиента.</p>
+<ol>
+<li>Использовать стандартные HTTP-коды (400 Bad Request, 403 Forbidden, 404 Not Found, 201 Created)</li>
+<li>Всегда возвращать 200 OK с объектом результата и кодом ошибки в теле ответа</li>
+<li>Привести все описания статусов к единой таблице ошибок со структурой {"result": "ERROR", "message": "..."}</li>
+</ol>
+<p><strong>Q-03. 🚫 Какая дата должна определяться как основа для расчёта месячного счётчика накопленных расходов?</strong></p>
+<p><em>Кому: Product owner · дефекты: D-02 · требования: R-15, R-06</em></p>
+<p>Зачем: Расхождение между датой совершения покупки клиентом и датой её проведения процессингом на границе месяцев приведёт к неверному расчёту порога и спорам по push-уведомлениям.</p>
+<ol>
+<li>Дата и время совершения операции клиентом (по часовому поясу Алматы)</li>
+<li>Дата и время фактической проводки операции в процессинге</li>
+<li>Дата совершения операции, если проводка прошла в течение 3 рабочих дней</li>
+</ol>
+<p><strong>Q-04. 🚫 Кто и в какой срок должен заполнить спецификацию требования R-13, в котором сейчас указана заглушка?</strong></p>
+<p><em>Кому: Тестировщик · дефекты: D-03 · требования: R-13</em></p>
+<p>Зачем: Разработка и тестирование не могут быть начаты по незаполненному требованию R-13.</p>
+<ol>
+<li>Аналитик заполнит требование до начала разработки спринта</li>
+<li>Тестировщики подготовят критерии и зафиксируют их в требовании</li>
+<li>Удалить требование R-13 из текущего объема релиза</li>
+</ol>
+<p><strong>Q-05. 🚫 Каковы правила отправки повторных push-уведомлений при изменении порога, возвратах средств и отключённом флаге enabled?</strong></p>
+<p><em>Кому: Product owner · дефекты: D-05, D-11, D-15, D-22, D-23 · требования: R-07, R-08, R-06, R-25, R-05</em></p>
+<p>Зачем: Неопределённость флагов отправки приведет либо к спаму push-уведомлениями, либо к пропуску уведомления при повторном превышении порога.</p>
+<ol>
+<li>Push не отправляется при enabled=0; лимит 1 push в месяц сбрасывается только при увеличении порога или возврате</li>
+<li>Отправлять не более 1 push за календарный месяц строго независимо от смены порогов и возвратов</li>
+<li>Сбрасывать статус отправки push при любом сохранении настроек или возврате покупки</li>
+</ol>
+<p><strong>Q-06. Каковы согласованные типы данных полей (amount, enabled), единицы измерения сумм и тексты валидации для UI?</strong></p>
+<p><em>Кому: Аналитик · дефекты: D-07, D-09, D-24, D-25, D-27 · требования: R-03, R-05, R-30, R-36, R-31, R-37</em></p>
+<p>Зачем: Несоответствие типов (string/integer) и единиц (тенге/тиыны) вызовет ошибки валидации на API и некорректный расчет сумм.</p>
+<ol>
+<li>amount: integer в тенге, enabled: integer (0/1), зафиксировать тексты ошибок UI под полем</li>
+<li>amount: integer в тиынах, enabled: boolean, добавить тексты UI-ошибок</li>
+<li>Привести все суммы к единой единице (тиыны) во всех API и БД, описать сообщения UI</li>
+</ol>
+<p><strong>Q-07. Необходимо ли обновить Sequence Diagram и добавить описание альтернативных сценариев и идемпотентности?</strong></p>
+<p><em>Кому: Архитектор · дефекты: D-08, D-12, D-30 · требования: R-04, R-09, R-12</em></p>
+<p>Зачем: Отсутствие шагов проверки флага enabled и альтернативных веток на диаграмме приводит к разному пониманию взаимодействия микросервисов.</p>
+<ol>
+<li>Добавить на диаграмму шаг запроса enabled и ветку 'порог не достигнут'</li>
+<li>Вынести требования по идемпотентности обработки событий процессинга в отдельный пункт R-12.1</li>
+<li>Оставить диаграмму без изменений, дополнив только текстовое описание сценариев</li>
+</ol>
+<p><strong>Q-08. Каковы актуальные значения метаданных документа (версия, дата, Prod URL, перечень ошибок и блок согласования)?</strong></p>
+<p><em>Кому: Аналитик · дефекты: D-13, D-18, D-28, D-29, D-37, D-39, D-40, D-41 · требования: R-18, R-38, R-06, R-01, R-02, R-03, R-04, R-09, R-10, R-11, R-12, R-13, R-17, R-27, R-28, R-32, R-33, R-34</em></p>
+<p>Зачем: Отсутствие версионирования и пропущенные адреса окружений затрудняют приемку документации и интеграционное тестирование.</p>
+<ol>
+<li>Заполнить версию документа, Prod URL, справочник сообщений ошибок и список согласующих лиц</li>
+<li>Указать ссылки на внешний Swagger и Confluence с метаданными</li>
+<li>Оформить метаданные перед передачей документа на финальное согласование</li>
+</ol>
 <h2 id="6">6. Сводка</h2>
 <table>
 <thead>
@@ -1816,59 +1902,80 @@ nav a{color:var(--accent);text-decoration:none}
 </tr>
 <tr>
 <td style="text-align: left;">Требований без замечаний</td>
-<td style="text-align: right;">13</td>
-</tr>
-<tr>
-<td style="text-align: left;">Всего нарушений</td>
-<td style="text-align: right;">35</td>
-</tr>
-<tr>
-<td style="text-align: left;">🔴 Критичных</td>
-<td style="text-align: right;">3</td>
-</tr>
-<tr>
-<td style="text-align: left;">🟠 Существенных</td>
-<td style="text-align: right;">17</td>
-</tr>
-<tr>
-<td style="text-align: left;">🟡 Незначительных</td>
 <td style="text-align: right;">15</td>
 </tr>
 <tr>
+<td style="text-align: left;">Всего нарушений</td>
+<td style="text-align: right;">41</td>
+</tr>
+<tr>
+<td style="text-align: left;">🔴 Критичных</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td style="text-align: left;">🟠 Существенных</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr>
+<td style="text-align: left;">🟡 Незначительных</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
 <td style="text-align: left;">Дефектов отдельных требований / набора</td>
-<td style="text-align: right;">25 / 10</td>
+<td style="text-align: right;">27 / 14</td>
 </tr>
 <tr>
 <td style="text-align: left;">Уточняющих вопросов (блокирующих)</td>
-<td style="text-align: right;">12 (3)</td>
+<td style="text-align: right;">8 (5)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Нарушения по критериям:</strong> Полнота — 9; Однозначность — 7; Непротиворечивость — 6; Корректность — 3; Проверяемость — 2; Атомарность — 2; Возможность валидации — 2; Модифицируемость (версия, структура) — 1; Уместность уровня (нет лишних проектных решений) — 1; Трассируемость — 1; Ранжирование по важности/стабильности — 1.</p>
+<p><strong>Нарушения по критериям:</strong> Непротиворечивость — 11; Полнота — 10; Корректность — 6; Соответствие шаблону/стандарту — 3; Полнота набора — 2; Атомарность — 2; Возможность валидации — 2; Проверяемость — 1; Однозначность — 1; Модифицируемость (версия, структура) — 1; Трассируемость — 1; Ранжирование по важности/стабильности — 1.</p>
 <p><strong>Критичные дефекты</strong> (непроверяемые, противоречивые, неполные или ошибочные формулировки):</p>
 <ul>
-<li><strong>D-01</strong> Требование не заполнено (заглушка) (R-13; Полнота) — «заполняются тестировщиками», строка 57</li>
-<li><strong>D-02</strong> Метод GET для операции изменения данных (R-18, R-22; Корректность) — «REST type | GET», строка 104</li>
-<li><strong>D-03</strong> Ошибка возвращается с кодом успеха 200 (R-41; Непротиворечивость) — «200. Successful — Created», строка 165</li>
+<li><strong>D-01</strong> Метод GET для операции изменения данных (R-18, R-03; Корректность) — «REST type | GET», строка 104</li>
+<li><strong>D-02</strong> Противоречие в расчёте месяца операции (R-15, R-06; Непротиворечивость) — «Покупка 31 января в 23:58 на 4 000 ₸ | Провести 1 февраля в 00:03 по Алматы | Февральский счётчик вырос на 4 000 ₸», строка 64</li>
+<li><strong>D-03</strong> Требование не заполнено (заглушка) (R-13; Полнота) — «заполняются тестировщиками», строка 57</li>
+<li><strong>D-04</strong> Ошибка возвращается с кодом успеха 200 (R-41; Непротиворечивость) — «200. Successful — Created», строка 165</li>
+<li><strong>D-05</strong> Противоречие в лимите push-уведомлений при смене порога (R-07, R-08; Непротиворечивость) — «На карту приходится максимум один такой push за календарный месяц.», строка 39</li>
+<li><strong>D-06</strong> Противоречие в HTTP-статусе ответа при ошибке валидации суммы (R-23, R-40, R-41; Непротиворечивость) — «При отклонении суммы вернуть прежнее состояние и результат ERROR.», строка 121</li>
 </ul>
 <h2 id="7">7. Итог</h2>
 <ul>
 <li><strong>Можно ли начинать разработку:</strong> нет</li>
 <li><strong>Можно ли начинать тестирование (тест-дизайн):</strong> нет</li>
 </ul>
-<p>Начинать разработку по документу нельзя: найдено 3 критичных дефекта (противоречия, непроверяемые или неполные требования, ошибки контракта). Тестирование также невозможно: тест-дизайн упрётся в противоречия и пробелы. Без замечаний — 13 из 48 требований.</p>
+<p>Начинать разработку по документу нельзя: найдено 6 критичных дефектов (противоречия, непроверяемые или неполные требования, ошибки контракта). Тестирование также невозможно: тест-дизайн упрётся в противоречия и пробелы. Без замечаний — 15 из 48 требований.</p>
 <p><strong>Что исправить в первую очередь:</strong></p>
 <ol>
-<li>D-01 (R-13): Требование не заполнено (заглушка) — Заполнить раздел до передачи в разработку или явно пометить как «вне объёма».</li>
-<li>D-02 (R-18, R-22): Метод GET для операции изменения данных — Использовать PUT (замена настройки) или POST, параметры передавать в теле JSON.</li>
-<li>D-03 (R-41): Ошибка возвращается с кодом успеха 200 — Ошибку валидации суммы возвращать с кодом 400 (или 422) и описать её отдельно.</li>
-<li>D-04 (R-05): Нет критериев приёмки для границ диапазона от 1 000 до 1 000 000 — Добавить критерии: 999, 1000, 1000000, 1000001 — с ожидаемым результатом для каждого.</li>
-<li>D-05 (R-07): Не описано поведение при совпадении расходов с порогом ровно в момент первой настройки — Дописать условие для ситуации, когда порог устанавливается при уже достигнутых расходах за месяц.</li>
-<li>D-06 (R-11): Отсутствует тип данных и обязательность для полей модели данных — Оформить требования к данным в виде таблицы с указанием типов данных, разрядности и ограничений.</li>
-<li>D-07 (R-12): Противоречие HTTP-методу в дочернем документе REST API — Изменить REST type в дочернем документе Части B с GET на POST или PUT для метода сохранения настроек.</li>
+<li>D-01 (R-18, R-03): Метод GET для операции изменения данных — Использовать PUT (замена настройки) или POST, параметры передавать в теле JSON.</li>
+<li>D-02 (R-15, R-06): Противоречие в расчёте месяца операции — Изменить ожидаемый результат: покупка от 31 января должна увеличивать счётчик января.</li>
+<li>D-03 (R-13): Требование не заполнено (заглушка) — Заполнить раздел до передачи в разработку или явно пометить как «вне объёма».</li>
+<li>D-04 (R-41): Ошибка возвращается с кодом успеха 200 — Ошибку валидации суммы возвращать с кодом 400 (или 422) и описать её отдельно.</li>
+<li>D-05 (R-07, R-08): Противоречие в лимите push-уведомлений при смене порога — Уточнить R-07 и R-08: либо указать, что изменение порога сбрасывает месячный лимит отправленных push, либо зафиксировать, что ограничение «не более 1 push в календарный месяц» является абсолютным.</li>
+<li>D-06 (R-23, R-40, R-41): Противоречие в HTTP-статусе ответа при ошибке валидации суммы — Привести спецификацию API к единому стандарту: возвращать HTTP 400 Bad Request при ошибках валидации параметров запроса и исключить бизнес-ошибки из ответа со статусом HTTP 200.</li>
+<li>D-07 (R-03): Отсутствуют тексты и условия ошибок UI — Описать конкретные тексты ошибок для всех валидационных правил и состояние кнопки «Сохранить» при некорректном вводе.</li>
 </ol>
-<p><strong>Получить ответы автора на блокирующие вопросы:</strong> Q-01, Q-02, Q-03.</p>
-<h2 id="_2">Приложение В. Методика</h2>
+<p><strong>Получить ответы автора на блокирующие вопросы:</strong> Q-01, Q-02, Q-03, Q-04, Q-05.</p>
+<h2 id="_2">Приложение Б. Замечания, отклонённые критиком</h2>
+<p>Эти замечания модель-аналитик предложила, но независимый критик счёл их ложными. Приведены для прозрачности.</p>
+<ul>
+<li>Нарушение HTTP-семантики при ошибке валидации (R-23) — причина: Дубликат замечания L-06, в котором проблема возврата HTTP 200 со статусом ERROR раскрыта наиболее полно со ссылками на обе стороны.</li>
+<li>Возврат ошибки ERROR со статусом HTTP 200 (R-35) — причина: Дубликат замечания L-06, объединяющего противоречие HTTP 200 OK result ERROR и описания статуса 400.</li>
+<li>Противоречие в обработке неверных параметров (R-40) — причина: Дубликат замечания L-06, которое точнее формулирует противоречие статуса 400 и ответа 200 с result: ERROR.</li>
+<li>Неопределённость понятия «в момент покупки» (R-01) — причина: Проблема надумана: бизнес-цель дает верхнеуровневый контекст, а точные временные рамки (в течение минуты) регламентированы в НФТ.</li>
+<li>Неполное описание архитектурных связей (R-02) — причина: Запрос деталей реализации: общая архитектурная схема дает концептуальный контекст, а детальные протоколы API специфицированы в Части B.</li>
+<li>Неопределенная точка отсчета времени отправки push (R-10) — причина: Проблема надумана: требование четко формулирует точку отсчета («после получения события») и ограничение по времени («в течение минуты»).</li>
+<li>Неполная спецификация модели данных (R-11) — причина: Требование деталей реализации: спецификация определяет необходимый состав хранимых сущностей, а структура таблиц проектируется разработкой.</li>
+<li>Неполнота условия: отсутствуют числовые значения границ (R-24) — причина: В документе есть ответ: числовые значения порогов (1 000–1 000 000 ₸) явно указаны в требовании Ф-1 и в таблице Query-параметров.</li>
+<li>Не описан сценарий превышения сниженного порога (R-26) — причина: Дубликат замечания L-08, в котором неполнота описания логики при снижении порога описана точнее и подробнее.</li>
+<li>Отсутствует заголовок Content-Type и идентификатор карты в ответе (R-41) — причина: Чистый вкус и придирка: формат ответа специфицирован JSON-структурой, а заголовок Content-Type и возвращение cardId в ответе не требуются.</li>
+<li>Противоречие в описании статуса 403 (R-43) — причина: Дубликат замечания L-18, описывающего нестыковку между описанием 403 Forbidden и фактическим возвратом 404.</li>
+<li>Объединение двух независимых проверок в один шаг (R-21) — причина: Чистый вкус: объединение двух валидаций в одном шаге алгоритма является стилистическим решением и не влияет на разработку и тестирование.</li>
+<li>На схеме не отражена проверка авторизации и прав (R-27) — причина: Проблема надумана: текстовая схема иллюстрирует верхнеуровневый поток данных, а шаги авторизации детализированы в алгоритме метода.</li>
+<li>Избыточный подраздел 403 при отсутствии сценария (R-47) — причина: Дубликат замечания L-18, указывающего на проблемы в оформлении и содержании раздела 403/404.</li>
+</ul>
+<h2 id="_3">Приложение В. Методика</h2>
 <ol>
 <li><strong>Чтение и нарезка</strong> выполняются кодом (без LLM): результат воспроизводим, у каждого требования есть номер строки.</li>
 <li><strong>Правила</strong> (код) ищут формальные дефекты: размытые слова, заглушки, пустые поля, неатомарность, HTTP-семантику, несогласованные типы и единицы, коды ответа, границы диапазонов, версию документа, согласования.</li>
